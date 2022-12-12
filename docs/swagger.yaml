@@ -1,0 +1,558 @@
+basePath: /api
+definitions:
+  models.Token:
+    properties:
+      access_token:
+        type: string
+      refresh_token:
+        type: string
+    type: object
+  request.ChangePassword:
+    properties:
+      password:
+        type: string
+    type: object
+  request.FindEmail:
+    properties:
+      email:
+        type: string
+    type: object
+  request.Login:
+    properties:
+      email:
+        example: alsyadahmad@holyhos.co.id
+        type: string
+      password:
+        example: password
+        type: string
+    type: object
+  request.UserRequest:
+    properties:
+      email:
+        example: milimnava@holyhos.co.id
+        type: string
+      facility_id:
+        example: 3
+        type: integer
+      full_name:
+        example: Milim Nava
+        type: string
+      gender:
+        example: Female
+        type: string
+      password:
+        example: password
+        type: string
+      role_id:
+        example: 2
+        type: integer
+    type: object
+  response.Error:
+    properties:
+      error: {}
+      message:
+        type: string
+    type: object
+  response.MessageData:
+    properties:
+      data: {}
+      message:
+        type: string
+    type: object
+  response.MessageDataJWT:
+    properties:
+      data: {}
+      jwt:
+        $ref: '#/definitions/models.Token'
+      message:
+        type: string
+    type: object
+  response.MessageOnly:
+    properties:
+      message:
+        type: string
+    type: object
+  response.User:
+    properties:
+      code:
+        example: DR00001
+        type: string
+      email:
+        example: alsyadahmad@holyhos.co.id
+        type: string
+      facility:
+        example: General
+        type: string
+      full_name:
+        example: Alsyad Ahmad
+        type: string
+      gender:
+        example: Male
+        type: string
+      id:
+        example: 1
+        type: integer
+      roles:
+        example: Doctor
+        type: string
+      status:
+        example: 1
+        type: integer
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  description: server API for Holy Hospital Application.
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  title: Holy Hospital Sever API
+  version: "1.0"
+paths:
+  /find_email:
+    get:
+      consumes:
+      - application/json
+      description: Find Email and Get Token to Change Password
+      parameters:
+      - description: Send Request Email to change password
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/request.FindEmail'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.MessageDataJWT'
+            - properties:
+                data:
+                  $ref: '#/definitions/response.User'
+              type: object
+        "417":
+          description: Expectation Failed
+          schema:
+            $ref: '#/definitions/response.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Error'
+      summary: FindEmail
+      tags:
+      - Authorization
+  /forgot_password:
+    post:
+      consumes:
+      - application/json
+      description: Login and get Authorization Token
+      parameters:
+      - description: token from find email
+        in: query
+        name: token
+        required: true
+        type: string
+      - description: Send Request New Password Password
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/request.ChangePassword'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.MessageOnly'
+        "417":
+          description: Expectation Failed
+          schema:
+            $ref: '#/definitions/response.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Error'
+      summary: Forgot Password
+      tags:
+      - Authorization
+  /login:
+    post:
+      consumes:
+      - application/json
+      description: Login and get Authorization Token
+      parameters:
+      - description: Send Request Email and Password
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/request.Login'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.MessageDataJWT'
+            - properties:
+                data:
+                  $ref: '#/definitions/response.User'
+              type: object
+        "417":
+          description: Expectation Failed
+          schema:
+            $ref: '#/definitions/response.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Error'
+      summary: Login
+      tags:
+      - Authorization
+  /logout:
+    post:
+      consumes:
+      - application/json
+      description: Route Path for Get New Access Token
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.MessageOnly'
+        "417":
+          description: Expectation Failed
+          schema:
+            $ref: '#/definitions/response.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Error'
+      security:
+      - ApiKey: []
+      summary: Refresh Token
+      tags:
+      - Authorization
+  /profile:
+    get:
+      consumes:
+      - application/json
+      description: Show Profile from Logged in User
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.MessageDataJWT'
+            - properties:
+                data:
+                  $ref: '#/definitions/response.User'
+              type: object
+        "417":
+          description: Expectation Failed
+          schema:
+            $ref: '#/definitions/response.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Error'
+      security:
+      - ApiKey: []
+      summary: UserProfile
+      tags:
+      - Authorization
+  /profile/change_password:
+    post:
+      consumes:
+      - application/json
+      description: Change Password in Profile Level
+      parameters:
+      - description: Send New Password
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/request.ChangePassword'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.MessageOnly'
+        "417":
+          description: Expectation Failed
+          schema:
+            $ref: '#/definitions/response.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Error'
+      security:
+      - ApiKey: []
+      summary: Change Password
+      tags:
+      - Authorization
+  /refresh_token:
+    post:
+      consumes:
+      - application/json
+      description: Route Path for Get New Access Token
+      parameters:
+      - description: Pass access_token Here
+        in: query
+        name: token
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.MessageData'
+            - properties:
+                data:
+                  $ref: '#/definitions/models.Token'
+              type: object
+        "417":
+          description: Expectation Failed
+          schema:
+            $ref: '#/definitions/response.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Error'
+      security:
+      - ApiKey: []
+      summary: Refresh Token
+      tags:
+      - Authorization
+  /register:
+    post:
+      consumes:
+      - application/json
+      description: Login and get Authorization Token
+      parameters:
+      - description: Send Request New User
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/request.UserRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.MessageOnly'
+        "417":
+          description: Expectation Failed
+          schema:
+            $ref: '#/definitions/response.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Error'
+      summary: Register
+      tags:
+      - Authorization
+  /user:
+    get:
+      consumes:
+      - application/json
+      description: Fetch All User Data
+      parameters:
+      - description: User Filter By Role ID
+        in: query
+        name: role_id
+        type: string
+      - description: User Filter By Facility ID
+        in: query
+        name: facility_id
+        type: string
+      - description: User Filter By Session ID
+        in: query
+        name: session_id
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.MessageData'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/response.User'
+                  type: array
+              type: object
+        "417":
+          description: Expectation Failed
+          schema:
+            $ref: '#/definitions/response.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Error'
+      security:
+      - ApiKey: []
+      summary: GetAllUser
+      tags:
+      - User
+    post:
+      consumes:
+      - application/json
+      description: Create New User Data
+      parameters:
+      - description: user data
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/request.UserRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/response.MessageOnly'
+        "417":
+          description: Expectation Failed
+          schema:
+            $ref: '#/definitions/response.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Error'
+      security:
+      - ApiKey: []
+      summary: CreateUser
+      tags:
+      - User
+  /user/:id:
+    get:
+      consumes:
+      - application/json
+      description: Fetch User Data By ID
+      parameters:
+      - description: user id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.MessageData'
+            - properties:
+                data:
+                  $ref: '#/definitions/response.User'
+              type: object
+        "417":
+          description: Expectation Failed
+          schema:
+            $ref: '#/definitions/response.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Error'
+      security:
+      - ApiKey: []
+      summary: GetUserByID
+      tags:
+      - User
+  /user/:id/delete:
+    delete:
+      consumes:
+      - application/json
+      description: Delete User Data By ID
+      parameters:
+      - description: user id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.MessageOnly'
+        "417":
+          description: Expectation Failed
+          schema:
+            $ref: '#/definitions/response.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Error'
+      security:
+      - ApiKey: []
+      summary: UpdateUser
+      tags:
+      - User
+  /user/:id/update:
+    put:
+      consumes:
+      - application/json
+      description: Update User Data By ID
+      parameters:
+      - description: user id
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: user data
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/request.UserRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.MessageOnly'
+        "417":
+          description: Expectation Failed
+          schema:
+            $ref: '#/definitions/response.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Error'
+      security:
+      - ApiKey: []
+      summary: UpdateUser
+      tags:
+      - User
+schemes:
+- http
+- https
+securityDefinitions:
+  ApiKey:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"
