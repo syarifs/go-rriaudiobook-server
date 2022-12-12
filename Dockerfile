@@ -7,8 +7,7 @@ RUN go get -d -v ./...
 
 RUN go build -o /go/bin/app
 
-FROM heroku/heroku:20
+FROM scratch as prod-env
 COPY --from=build-env /go/bin/app /
-COPY --from=build-env /go/src/app/config/config.yaml /config/config.yaml
 EXPOSE 8080
 CMD ["/app"]
