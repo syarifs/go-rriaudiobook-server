@@ -890,11 +890,11 @@ const docTemplate = `{
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
 	Version:          "1.0",
-	Host:             "localhost:8080",
+	Host:             "go-rriaudiobook-server-production.up.railway.app",
 	BasePath:         "/api",
 	Schemes:          []string{"http", "https"},
-	Title:            "Holy Hospital Sever API",
-	Description:      "server API for Holy Hospital Application.",
+	Title:            "RRI Audiobook API",
+	Description:      "server API for RRI Audiobook Application.",
 	InfoInstanceName: "swagger",
 	SwaggerTemplate:  docTemplate,
 }

@@ -30,7 +30,7 @@ import (
 // @license.name  Apache 2.0
 // @license.url   http://www.apache.org/licenses/LICENSE-2.0.html
 
-// @host     localhost:8080
+// @host     go-rriaudiobook-server-production.up.railway.app
 // @BasePath  /api
 // @schemes http https
 func main() {

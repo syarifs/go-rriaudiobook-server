@@ -99,14 +99,14 @@ definitions:
         example: 1
         type: integer
     type: object
-host: localhost:8080
+host: go-rriaudiobook-server-production.up.railway.app
 info:
   contact: {}
-  description: server API for Holy Hospital Application.
+  description: server API for RRI Audiobook Application.
   license:
     name: Apache 2.0
     url: http://www.apache.org/licenses/LICENSE-2.0.html
-  title: Holy Hospital Sever API
+  title: RRI Audiobook API
   version: "1.0"
 paths:
   /find_email:

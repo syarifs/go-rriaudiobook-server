@@ -5,8 +5,8 @@
     ],
     "swagger": "2.0",
     "info": {
-        "description": "server API for Holy Hospital Application.",
-        "title": "Holy Hospital Sever API",
+        "description": "server API for RRI Audiobook Application.",
+        "title": "RRI Audiobook API",
         "contact": {},
         "license": {
             "name": "Apache 2.0",
@@ -14,7 +14,7 @@
         },
         "version": "1.0"
     },
-    "host": "localhost:8080",
+    "host": "go-rriaudiobook-server-production.up.railway.app",
     "basePath": "/api",
     "paths": {
         "/find_email": {
