@@ -18,3 +18,8 @@ jwt:
   ACCESS_TIME: 24 # in hour
   REFRESH_TIME: 240
   FORGOT_PASSWORD_TIME: 5 # in minutes
+s3:
+  BUCKET_NAME: ""
+  ACCOUNT_ID: ""
+  ACCESS_KEY_ID: ""
+  ACCESS_KEY_SECRET: ""

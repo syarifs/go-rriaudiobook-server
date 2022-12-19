@@ -26,9 +26,6 @@ func NewUserController(srv *service.UserService) *UserController {
 // @Security ApiKey
 // @Accept json
 // @Produce json
-// @Param role_id query string false "User Filter By Role ID"
-// @Param facility_id query string false "User Filter By Facility ID"
-// @Param session_id query string false "User Filter By Session ID"
 // @Success 200 {object} response.MessageData{data=[]response.User}
 // @Failure 417 {object} response.Error{}
 // @Failure 500 {object} response.Error{}
@@ -36,15 +33,7 @@ func NewUserController(srv *service.UserService) *UserController {
 func (acon UserController) GetAllUser(c echo.Context) error {
 	var res []response.User
 	var err error
-	role_id, _ := strconv.Atoi(c.QueryParam("role_id"))
-	facility_id, _ := strconv.Atoi(c.QueryParam("facility_id"))
-	session_id, _ := strconv.Atoi(c.QueryParam("session_id"))
-
-	if role_id == 0 && facility_id == 0 {
-		res, err = acon.srv.FindAll()
-	} else {
-		res, err = acon.srv.FindByRoleFacility(role_id, facility_id, session_id)
-	}
+	res, err = acon.srv.FindAll()
 
 	if r, ok := check.HTTP(res, err, "Fetch User"); !ok {
 		return c.JSON(r.Code, r.Result)
@@ -64,7 +53,7 @@ func (acon UserController) GetAllUser(c echo.Context) error {
 // @Accept json
 // @Produce json
 // @Param id path int true "user id"
-// @Success 200 {object} response.MessageData{data=response.User}
+// @Success 200 {object} response.MessageData{data=response.UserDetail}
 // @Failure 417 {object} response.Error{}
 // @Failure 500 {object} response.Error{}
 // @Router /user/:id [get]

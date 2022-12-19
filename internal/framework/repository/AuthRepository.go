@@ -23,7 +23,7 @@ func NewAuthRepository(sqldb *gorm.DB, mongodb *mongo.Database) *authRepository 
 
 func (repo authRepository) FindByCode(code string) (users response.User, err error) {
 	db := repo.sqldb.Model(&m.User{}).
-		Select(`users.*, Role.name as role`).
+		Select(`users.*, "Role".name as role`).
 		Joins("Role").
 		Where("users.code = ?", code).Find(&users)
 	err = check.DBRecord(db, check.FIND)

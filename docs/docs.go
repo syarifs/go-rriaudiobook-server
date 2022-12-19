@@ -20,8 +20,183 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/find_email": {
+        "/books": {
             "get": {
+                "security": [
+                    {
+                        "ApiKey": []
+                    }
+                ],
+                "description": "Fetch All Book Data",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Book"
+                ],
+                "summary": "GetAllBook",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.MessageData"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/definitions/response.Book"
+                                            }
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "417": {
+                        "description": "Expectation Failed",
+                        "schema": {
+                            "$ref": "#/definitions/response.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.Error"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "ApiKey": []
+                    }
+                ],
+                "description": "Fetch Book Data By ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Book"
+                ],
+                "summary": "GetBookByID",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "book id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.MessageData"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/response.BookDetail"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "417": {
+                        "description": "Expectation Failed",
+                        "schema": {
+                            "$ref": "#/definitions/response.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/books/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKey": []
+                    }
+                ],
+                "description": "Fetch Book Data By ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Book"
+                ],
+                "summary": "GetBookByID",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "book id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.MessageData"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/response.BookDetail"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "417": {
+                        "description": "Expectation Failed",
+                        "schema": {
+                            "$ref": "#/definitions/response.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/find_email": {
+            "post": {
                 "description": "Find Email and Get Token to Change Password",
                 "consumes": [
                     "application/json"
@@ -457,26 +632,6 @@ const docTemplate = `{
                     "User"
                 ],
                 "summary": "GetAllUser",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "User Filter By Role ID",
-                        "name": "role_id",
-                        "in": "query"
-                    },
-                    {
-                        "type": "string",
-                        "description": "User Filter By Facility ID",
-                        "name": "facility_id",
-                        "in": "query"
-                    },
-                    {
-                        "type": "string",
-                        "description": "User Filter By Session ID",
-                        "name": "session_id",
-                        "in": "query"
-                    }
-                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -602,7 +757,7 @@ const docTemplate = `{
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/definitions/response.User"
+                                            "$ref": "#/definitions/response.UserDetail"
                                         }
                                     }
                                 }
@@ -780,10 +935,6 @@ const docTemplate = `{
                     "type": "string",
                     "example": "milimnava@holyhos.co.id"
                 },
-                "facility_id": {
-                    "type": "integer",
-                    "example": 3
-                },
                 "full_name": {
                     "type": "string",
                     "example": "Milim Nava"
@@ -799,6 +950,79 @@ const docTemplate = `{
                 "role_id": {
                     "type": "integer",
                     "example": 2
+                }
+            }
+        },
+        "response.Book": {
+            "type": "object",
+            "properties": {
+                "category": {
+                    "type": "string",
+                    "example": "blade"
+                },
+                "cover_image": {
+                    "type": "string",
+                    "example": "http://cdn.image.com/path/to/image.png"
+                },
+                "id": {
+                    "type": "integer",
+                    "example": 1
+                },
+                "title": {
+                    "type": "string",
+                    "example": "This is Title"
+                }
+            }
+        },
+        "response.BookDetail": {
+            "type": "object",
+            "properties": {
+                "category": {
+                    "type": "string",
+                    "example": "blade"
+                },
+                "chapters": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/response.Chapter"
+                    }
+                },
+                "cover_image": {
+                    "type": "string",
+                    "example": "http://cdn.image.com/path/to/image.png"
+                },
+                "id": {
+                    "type": "integer",
+                    "example": 1
+                },
+                "summary": {
+                    "type": "string",
+                    "example": "test lipsum"
+                },
+                "title": {
+                    "type": "string",
+                    "example": "This is Title"
+                }
+            }
+        },
+        "response.Chapter": {
+            "type": "object",
+            "properties": {
+                "book_id": {
+                    "type": "string",
+                    "example": "1"
+                },
+                "id": {
+                    "type": "string",
+                    "example": "1"
+                },
+                "media_path": {
+                    "type": "string",
+                    "example": "http://cdn.audio.com/path/to/audio.wav"
+                },
+                "title": {
+                    "type": "string",
+                    "example": "blaze"
                 }
             }
         },
@@ -847,13 +1071,34 @@ const docTemplate = `{
                     "type": "string",
                     "example": "DR00001"
                 },
+                "full_name": {
+                    "type": "string",
+                    "example": "Alsyad Ahmad"
+                },
+                "id": {
+                    "type": "integer",
+                    "example": 1
+                },
+                "roles": {
+                    "type": "string",
+                    "example": "Doctor"
+                },
+                "status": {
+                    "type": "integer",
+                    "example": 1
+                }
+            }
+        },
+        "response.UserDetail": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "string",
+                    "example": "DR00001"
+                },
                 "email": {
                     "type": "string",
                     "example": "alsyadahmad@holyhos.co.id"
-                },
-                "facility": {
-                    "type": "string",
-                    "example": "General"
                 },
                 "full_name": {
                     "type": "string",
@@ -890,7 +1135,7 @@ const docTemplate = `{
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
 	Version:          "1.0",
-	Host:             "go-rriaudiobook-server-production.up.railway.app",
+	Host:             "localhost:8080",
 	BasePath:         "/api",
 	Schemes:          []string{"http", "https"},
 	Title:            "RRI Audiobook API",

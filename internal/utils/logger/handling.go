@@ -10,12 +10,12 @@ import (
 
 type (
 	mongoWriter struct {
-    client *mongo.Database
+		client *mongo.Database
 	}
-	
+
 	logStruct struct {
-		Timestamp int64 `json:"timestamp"`
-		Logs string `json:"logs"`
+		Timestamp int64  `json:"timestamp"`
+		Logs      string `json:"logs"`
 	}
 )
 
@@ -29,7 +29,7 @@ func (mw *mongoWriter) Write(p []byte) (n int, err error) {
 	var db = mw.client.Collection("logs")
 	doc := logStruct{
 		Timestamp: time.Now().Unix(),
-		Logs: string(p),
+		Logs:      string(p),
 	}
 
 	_, err = db.InsertOne(context.TODO(), doc)
@@ -47,4 +47,3 @@ func WriteLog(logs interface{}) {
 
 	log.Println(logs)
 }
-

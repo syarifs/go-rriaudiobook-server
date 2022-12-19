@@ -29,5 +29,6 @@ func seedAll() []Seed {
 	return []Seed{
 		levelSeeder(),
 		userSeeder(),
+		bookSeeder(),
 	}
 }

@@ -2,3 +2,5 @@
 *.bak
 .vscode
 .idea
+config/config.yaml
+config/config.yml

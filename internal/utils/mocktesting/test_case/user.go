@@ -28,25 +28,18 @@ func NewUserUpdateTest() []expected {
 			Data:   dt,
 			ExpectQuery: func(_mock sqlmock.Sqlmock) {
 				count0 := _mock.NewRows([]string{"COUNT(*)"}).AddRow(0)
-				count1 := _mock.NewRows([]string{"COUNT(*)"}).AddRow(1)
 
 				// Validation
 				_mock.ExpectQuery(mqry.Duplicate("users", "email", dt.Email, dt.ID)).
 					WillReturnRows(count0)
 				_mock.ExpectQuery(mqry.Duplicate("users", "full_name", dt.FullName, dt.ID)).
 					WillReturnRows(count0)
-				_mock.ExpectQuery(mqry.RoleLimit(dt.MedicalFacilityID)).
-					WithArgs(mdt.Register.RoleID).
-					WillReturnRows(count0)
-				_mock.ExpectQuery(mqry.AvailableFacility()).
-					WithArgs(dt.MedicalFacilityID).
-					WillReturnRows(count1)
 
 				// Update
 				any := sqlmock.AnyArg()
 				_mock.ExpectBegin()
 				_mock.ExpectExec(mqry.UpdateUser()).
-					WithArgs(dt.FullName, dt.Gender, dt.Email, any, dt.RoleID, dt.MedicalFacilityID, any).
+					WithArgs(dt.FullName, dt.Gender, dt.Email, any, dt.RoleID, any).
 					WillReturnResult(sqlmock.NewResult(1, 1))
 				_mock.ExpectCommit()
 			},

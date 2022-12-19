@@ -1,7 +1,6 @@
 package controller
 
 import (
-	"fmt"
 	"go-rriaudiobook-server/internal/core/entity/models"
 	"go-rriaudiobook-server/internal/core/entity/request"
 	"go-rriaudiobook-server/internal/core/entity/response"
@@ -147,7 +146,6 @@ func (acon AuthController) Profile(c echo.Context) error {
 		return c.JSON(r.Code, r.Result)
 	}
 
-	fmt.Println(token, code)
 	res, err := acon.srv.MyProfile(code.(string))
 	if r, ok := check.HTTP(res, err, "Get User Profile"); !ok {
 		return c.JSON(r.Code, r.Result)
@@ -169,7 +167,7 @@ func (acon AuthController) Profile(c echo.Context) error {
 // @Success 200 {object} response.MessageDataJWT{data=response.User{}}
 // @Failure 417 {object} response.Error{}
 // @Failure 500 {object} response.Error{}
-// @Router /find_email [get]
+// @Router /find_email [post]
 func (acon AuthController) FindEmail(c echo.Context) error {
 	var fe request.FindEmail
 

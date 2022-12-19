@@ -107,7 +107,6 @@ func NewRegisterTestCase() []expected {
 			Data:   dt,
 			ExpectQuery: func(_mock sqlmock.Sqlmock) {
 				count0 := _mock.NewRows([]string{"COUNT(*)"}).AddRow(0)
-				count1 := _mock.NewRows([]string{"COUNT(*)"}).AddRow(1)
 				code := _mock.NewRows([]string{"code"}).AddRow("DCR")
 
 				// Validation
@@ -115,15 +114,8 @@ func NewRegisterTestCase() []expected {
 					WillReturnRows(count0)
 				_mock.ExpectQuery(mqry.Duplicate("users", "full_name", dt.FullName, 0)).
 					WillReturnRows(count0)
-				_mock.ExpectQuery(mqry.RoleLimit(dt.MedicalFacilityID)).
-					WithArgs(mdt.Register.RoleID).
-					WillReturnRows(count0)
-				_mock.ExpectQuery(mqry.AvailableFacility()).
-					WithArgs(dt.MedicalFacilityID).
-					WillReturnRows(count1)
 
 				// Register
-				any := sqlmock.AnyArg()
 				_mock.ExpectBegin()
 				_mock.ExpectQuery(mqry.UserRole()).
 					WithArgs(dt.RoleID).
@@ -131,10 +123,7 @@ func NewRegisterTestCase() []expected {
 				_mock.ExpectQuery(mqry.RoleCode()).
 					WithArgs(dt.RoleID).
 					WillReturnRows(code)
-				_mock.ExpectExec(mqry.NewUser()).
-					WithArgs(any, dt.FullName, dt.Gender, dt.Email, any, any, dt.RoleID, dt.MedicalFacilityID, any).
-					WillReturnResult(sqlmock.NewResult(1, 1))
-				_mock.ExpectCommit()
+				_mock.ExpectExec(mqry.NewUser())
 			},
 		},
 	}

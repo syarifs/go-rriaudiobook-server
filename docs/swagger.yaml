@@ -31,9 +31,6 @@ definitions:
       email:
         example: milimnava@holyhos.co.id
         type: string
-      facility_id:
-        example: 3
-        type: integer
       full_name:
         example: Milim Nava
         type: string
@@ -46,6 +43,58 @@ definitions:
       role_id:
         example: 2
         type: integer
+    type: object
+  response.Book:
+    properties:
+      category:
+        example: blade
+        type: string
+      cover_image:
+        example: http://cdn.image.com/path/to/image.png
+        type: string
+      id:
+        example: 1
+        type: integer
+      title:
+        example: This is Title
+        type: string
+    type: object
+  response.BookDetail:
+    properties:
+      category:
+        example: blade
+        type: string
+      chapters:
+        items:
+          $ref: '#/definitions/response.Chapter'
+        type: array
+      cover_image:
+        example: http://cdn.image.com/path/to/image.png
+        type: string
+      id:
+        example: 1
+        type: integer
+      summary:
+        example: test lipsum
+        type: string
+      title:
+        example: This is Title
+        type: string
+    type: object
+  response.Chapter:
+    properties:
+      book_id:
+        example: "1"
+        type: string
+      id:
+        example: "1"
+        type: string
+      media_path:
+        example: http://cdn.audio.com/path/to/audio.wav
+        type: string
+      title:
+        example: blaze
+        type: string
     type: object
   response.Error:
     properties:
@@ -77,11 +126,26 @@ definitions:
       code:
         example: DR00001
         type: string
+      full_name:
+        example: Alsyad Ahmad
+        type: string
+      id:
+        example: 1
+        type: integer
+      roles:
+        example: Doctor
+        type: string
+      status:
+        example: 1
+        type: integer
+    type: object
+  response.UserDetail:
+    properties:
+      code:
+        example: DR00001
+        type: string
       email:
         example: alsyadahmad@holyhos.co.id
-        type: string
-      facility:
-        example: General
         type: string
       full_name:
         example: Alsyad Ahmad
@@ -99,7 +163,7 @@ definitions:
         example: 1
         type: integer
     type: object
-host: go-rriaudiobook-server-production.up.railway.app
+host: localhost:8080
 info:
   contact: {}
   description: server API for RRI Audiobook Application.
@@ -109,8 +173,111 @@ info:
   title: RRI Audiobook API
   version: "1.0"
 paths:
-  /find_email:
+  /books:
     get:
+      consumes:
+      - application/json
+      description: Fetch All Book Data
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.MessageData'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/response.Book'
+                  type: array
+              type: object
+        "417":
+          description: Expectation Failed
+          schema:
+            $ref: '#/definitions/response.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Error'
+      security:
+      - ApiKey: []
+      summary: GetAllBook
+      tags:
+      - Book
+    post:
+      consumes:
+      - application/json
+      description: Fetch Book Data By ID
+      parameters:
+      - description: book id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.MessageData'
+            - properties:
+                data:
+                  $ref: '#/definitions/response.BookDetail'
+              type: object
+        "417":
+          description: Expectation Failed
+          schema:
+            $ref: '#/definitions/response.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Error'
+      security:
+      - ApiKey: []
+      summary: GetBookByID
+      tags:
+      - Book
+  /books/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Fetch Book Data By ID
+      parameters:
+      - description: book id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.MessageData'
+            - properties:
+                data:
+                  $ref: '#/definitions/response.BookDetail'
+              type: object
+        "417":
+          description: Expectation Failed
+          schema:
+            $ref: '#/definitions/response.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Error'
+      security:
+      - ApiKey: []
+      summary: GetBookByID
+      tags:
+      - Book
+  /find_email:
+    post:
       consumes:
       - application/json
       description: Find Email and Get Token to Change Password
@@ -372,19 +539,6 @@ paths:
       consumes:
       - application/json
       description: Fetch All User Data
-      parameters:
-      - description: User Filter By Role ID
-        in: query
-        name: role_id
-        type: string
-      - description: User Filter By Facility ID
-        in: query
-        name: facility_id
-        type: string
-      - description: User Filter By Session ID
-        in: query
-        name: session_id
-        type: string
       produces:
       - application/json
       responses:
@@ -464,7 +618,7 @@ paths:
             - $ref: '#/definitions/response.MessageData'
             - properties:
                 data:
-                  $ref: '#/definitions/response.User'
+                  $ref: '#/definitions/response.UserDetail'
               type: object
         "417":
           description: Expectation Failed

@@ -24,7 +24,7 @@ func InitDatabase() (sqldb *gorm.DB, mongodb *mongo.Database) {
 			panic(err)
 		}
 	} else {
-		panic("No SQL Database Used")
+		panic("SQL Database Not Supported")
 	}
 
 	err = migrateDB(sqldb)

@@ -30,6 +30,11 @@ var (
 	JWT_ACCESS_EXPIRE_TIME         int64
 	JWT_REFRESH_EXPIRE_TIME        int64
 	JWT_RESET_PASSWORD_EXPIRE_TIME int64
+	S3_BUCKET_NAME                 string
+	S3_ACCOUNT_ID                  string
+	S3_ACCESS_KEY_ID               string
+	S3_ACCESS_KEY_SECRET           string
+	S3_PUBLIC_ACCESS               string
 )
 
 func LoadConfig() {
@@ -50,7 +55,7 @@ func LoadConfig() {
 
 	SERVER_PORT, _ = checkEnv(os.Getenv("PORT"), viper.GetString("server.PORT"))
 	MONGODB_STRING, _ = checkEnv(os.Getenv("MONGODB_STRING"), viper.GetString("mongo.STRING"))
-	MONGODB_DATABASE, _ = checkEnv(os.Getenv("MONGODB_DATABASE"), viper.GetString("mongo.MONGODB_DATABASE"))
+	MONGODB_DATABASE, _ = checkEnv(os.Getenv("MONGODB_DATABASE"), viper.GetString("mongo.DATABASE"))
 	DB_DRIVER, _ = checkEnv(os.Getenv("DB_DRIVER"), viper.GetString("db.DRIVER"))
 	DB_DATABASE, _ = checkEnv(os.Getenv("DB_DATABASE"), viper.GetString("db.DATABASE"))
 	DB_USERNAME, _ = checkEnv(os.Getenv("DB_USERNAME"), viper.GetString("db.USERNAME"))
@@ -58,17 +63,22 @@ func LoadConfig() {
 	DB_HOST, _ = checkEnv(os.Getenv("DB_HOST"), viper.GetString("db.HOST"))
 	DB_PORT, _ = checkEnv(os.Getenv("DB_PORT"), viper.GetString("db.PORT"))
 	DB_TIMEZONE, _ = checkEnv(os.Getenv("DB_TIMEZONE"), viper.GetString("db.TIMEZONE"))
-	// access_key, _ := checkEnv(os.Getenv("ACCESS_KEY"), viper.GetString("secret.ACCESS_KEY"))
-	// reset_key, _ := checkEnv(os.Getenv("RESET_KEY"), viper.GetString("secret.RESET_KEY"))
-	// ACCESS_KEY, _ = []byte(access_key)
-	// RESET_KEY, _ = []byte(reset_key)
+	access_key, _ := checkEnv(os.Getenv("ACCESS_KEY"), viper.GetString("secret.ACCESS_KEY"))
+	reset_key, _ := checkEnv(os.Getenv("RESET_KEY"), viper.GetString("secret.RESET_KEY"))
+	ACCESS_KEY = []byte(access_key)
+	RESET_KEY = []byte(reset_key)
 	SMTP_SERVER, _ = checkEnv(os.Getenv("SMTP_SERVER"), viper.GetString("smtp.SERVER"))
 	SMTP_PORT, _ = checkEnv(os.Getenv("SMTP_PORT"), viper.GetString("smtp.PORT"))
-	EMAIL, _ = checkEnv(os.Getenv("EMAIL"), viper.GetString("smtp.EMAIL"))
-	PASSWORD, _ = checkEnv(os.Getenv("PASSWORD"), viper.GetString("smtp.PASSWORD"))
+	S3_BUCKET_NAME, _ = checkEnv(os.Getenv("S3_BUCKET_NAME"), viper.GetString("s3.BUCKET_NAME"))
+	S3_ACCOUNT_ID, _ = checkEnv(os.Getenv("S3_ACCOUNT_ID"), viper.GetString("s3.ACCOUNT_ID"))
+	S3_ACCESS_KEY_ID, _ = checkEnv(os.Getenv("S3_ACCESS_KEY_ID"), viper.GetString("s3.ACCESS_KEY_ID"))
+	S3_ACCESS_KEY_SECRET, _ = checkEnv(os.Getenv("S3_ACCESS_KEY_SECRET"), viper.GetString("s3.ACCESS_KEY_SECRET"))
+	S3_PUBLIC_ACCESS, _ = checkEnv(os.Getenv("S3_PUBLIC_ACCESS"), viper.GetString("s3.PUBLIC_ACCESS"))
+	EMAIL, _ = checkEnv(os.Getenv("SMTP_EMAIL"), viper.GetString("smtp.EMAIL"))
+	PASSWORD, _ = checkEnv(os.Getenv("SMTP_PASSWORD"), viper.GetString("smtp.PASSWORD"))
 	_, JWT_ACCESS_EXPIRE_TIME = checkEnv(
-		os.Getenv("JWT_ACCESS_EXPIRE_TIME"), 
-		viper.GetString("jwt.ACCESS_TIME"), 
+		os.Getenv("JWT_ACCESS_EXPIRE_TIME"),
+		viper.GetString("jwt.ACCESS_TIME"),
 		"int",
 	)
 	_, JWT_REFRESH_EXPIRE_TIME = checkEnv(

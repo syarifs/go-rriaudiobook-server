@@ -1,7 +1,6 @@
 package jwt
 
 import (
-	"fmt"
 	"go-rriaudiobook-server/internal/core/entity/models"
 	"go-rriaudiobook-server/internal/utils/config"
 	"go-rriaudiobook-server/internal/utils/errors"
@@ -47,7 +46,6 @@ func CreateToken(code, level string, types Token) (t models.Token, err error) {
 		expTime = time.Now().Add(time.Hour * time.Duration(config.JWT_ACCESS_EXPIRE_TIME)).Unix()
 		sign = config.ACCESS_KEY
 	} else if types == RESET {
-		fmt.Println(config.JWT_RESET_PASSWORD_EXPIRE_TIME)
 		expTime = time.Now().Add(time.Minute * time.Duration(config.JWT_RESET_PASSWORD_EXPIRE_TIME)).Unix()
 		sign = config.RESET_KEY
 	}

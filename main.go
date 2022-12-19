@@ -8,6 +8,7 @@ import (
 	"go-rriaudiobook-server/internal/framework/transport/controller"
 	mw "go-rriaudiobook-server/internal/framework/transport/middleware"
 	"go-rriaudiobook-server/internal/utils/config"
+	"go-rriaudiobook-server/internal/utils/file"
 	"go-rriaudiobook-server/internal/utils/jwt"
 	"go-rriaudiobook-server/internal/utils/logger"
 	"go-rriaudiobook-server/internal/utils/validators"
@@ -30,7 +31,7 @@ import (
 // @license.name  Apache 2.0
 // @license.url   http://www.apache.org/licenses/LICENSE-2.0.html
 
-// @host     go-rriaudiobook-server-production.up.railway.app
+// @host     localhost:8080
 // @BasePath  /api
 // @schemes http https
 func main() {
@@ -45,8 +46,10 @@ func main() {
 	validators.NewValidator(db)
 
 	e := echo.New()
+
 	e.Use(emw.CORS())
 	e.GET("/*", echoSwagger.WrapHandler)
+	file.InitS3()
 
 	api := e.Group("/api")
 	jwt.NewJWTConnection(mongodb)

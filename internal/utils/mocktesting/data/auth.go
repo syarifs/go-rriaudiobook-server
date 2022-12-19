@@ -11,13 +11,12 @@ var Login r.Login = r.Login{
 }
 
 var Register r.UserRequest = r.UserRequest{
-	ID:                1,
-	Email:             "alsyadahmad@holyhos.co.id",
-	Password:          "password",
-	FullName:          "Alsyad Ahmad",
-	Gender:            "Male",
-	RoleID:            2,
-	MedicalFacilityID: 1,
+	ID:       1,
+	Email:    "alsyadahmad@holyhos.co.id",
+	Password: "password",
+	FullName: "Alsyad Ahmad",
+	Gender:   "Male",
+	RoleID:   2,
 }
 
 var ChangePassword r.ChangePassword = r.ChangePassword{
@@ -31,8 +30,6 @@ var User response.User = response.User{
 	Email:    "alsyadahmad@holyhos.co.id",
 	Password: "password",
 	FullName: "Alsyad Ahmad",
-	Gender:   "Male",
 	Role:     "Doctor",
-	Facility: "General",
 	Status:   1,
 }

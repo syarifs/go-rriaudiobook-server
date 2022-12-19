@@ -28,7 +28,7 @@ func GetTokenData(header string, data string, tokenType Token) (extracted interf
 
 	extract, err := ExtractToken(header, tokenType)
 	if extract != nil {
-		extracted, _ = extract.(jwt.MapClaims)
+		extracted, _ = extract.(jwt.MapClaims)[data]
 	}
 
 	return
@@ -40,7 +40,6 @@ func GetToken(c echo.Context, tokenType Token) (header string, err error) {
 
 	if header == "" || len(headers) < 2 {
 		err = errors.ErrNoToken
-		fmt.Println(err)
 		return
 	}
 
