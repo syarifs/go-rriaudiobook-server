@@ -5,6 +5,7 @@ import (
 	"go-rriaudiobook-server/internal/utils/errors/check"
 	"go-rriaudiobook-server/internal/utils/jwt"
 	"net/http"
+	"strings"
 
 	"github.com/labstack/echo/v4"
 )
@@ -46,7 +47,7 @@ func AdminPermission(next echo.HandlerFunc) echo.HandlerFunc {
 	}
 }
 
-func DoctorPermission(next echo.HandlerFunc) echo.HandlerFunc {
+func UploaderPermission(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		token, _ := jwt.GetToken(c, jwt.ACCESS)
 		role, err := jwt.GetTokenData(token, "role", jwt.ACCESS)
@@ -55,9 +56,9 @@ func DoctorPermission(next echo.HandlerFunc) echo.HandlerFunc {
 			return c.JSON(r.Code, r.Result)
 		}
 
-		if role != "doctor" {
+		if strings.ToLower(role.(string)) != "uploader" {
 			return c.JSON(http.StatusUnauthorized, response.MessageOnly{
-				Message: "access for this route only for doctor",
+				Message: "access for this route only for uploader",
 			})
 		}
 
@@ -65,7 +66,7 @@ func DoctorPermission(next echo.HandlerFunc) echo.HandlerFunc {
 	}
 }
 
-func NursePermission(next echo.HandlerFunc) echo.HandlerFunc {
+func AdminUploaderPermission(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		token, _ := jwt.GetToken(c, jwt.ACCESS)
 		role, err := jwt.GetTokenData(token, "role", jwt.ACCESS)
@@ -74,28 +75,11 @@ func NursePermission(next echo.HandlerFunc) echo.HandlerFunc {
 			return c.JSON(r.Code, r.Result)
 		}
 
-		if role != "nurse" {
+		if strings.ToLower(role.(string)) != "uploader" &&
+			strings.ToLower(role.(string)) != "admin" ||
+			strings.ToLower(role.(string)) != "administrator" {
 			return c.JSON(http.StatusUnauthorized, response.MessageOnly{
-				Message: "access for this route only for nurse",
-			})
-		}
-
-		return next(c)
-	}
-}
-
-func DoctorNursePermission(next echo.HandlerFunc) echo.HandlerFunc {
-	return func(c echo.Context) error {
-		token, _ := jwt.GetToken(c, jwt.ACCESS)
-		role, err := jwt.GetTokenData(token, "role", jwt.ACCESS)
-
-		if r, ok := check.HTTP(nil, err, "Validate Token"); !ok {
-			return c.JSON(r.Code, r.Result)
-		}
-
-		if role != "doctor" && role != "nurse" {
-			return c.JSON(http.StatusUnauthorized, response.MessageOnly{
-				Message: "access for this route only for doctor and nurse",
+				Message: "access for this route only for administrator and uploader",
 			})
 		}
 
