@@ -9,9 +9,12 @@ import (
 
 func NewBookRoutes(e *echo.Group, acon *controller.BookController, middleware ...echo.MiddlewareFunc) {
 	patient := e.Group("/books", middleware...)
-	patient.POST("", acon.Create)
+	patient.POST("", acon.InsertBook)
 	patient.GET("", acon.GetAllBook)
 	patient.GET("/:id", acon.GetBookByID)
-	// patient.PUT("/:id/update", acon.Update, mw.AdminPermission)
-	// patient.DELETE("/:id/delete", acon.Delete, mw.AdminPermission)
+	patient.PUT("/:id/update", acon.UpdateBook)
+	patient.DELETE("/:id/delete", acon.DeleteBook)
+	patient.POST("/:book_id/chapters", acon.InsertChapter)
+	patient.PUT("/:book_id/chapters/:chapter_id/update", acon.UpdateChapter)
+	patient.DELETE("/:book_id/chapters/:chapter_id/delete", acon.DeleteChapter)
 }

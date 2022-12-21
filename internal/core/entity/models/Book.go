@@ -7,5 +7,5 @@ type Book struct {
 	CoverImage string    `json:"cover_image"`
 	CategoryID uint      `json:"category_id"`
 	Category   Category  `json:"category"`
-	Chapter    []Chapter `json:"chapter"`
+	Chapter    []Chapter `json:"chapters" gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 }

@@ -17,8 +17,9 @@ type BookDetail struct {
 }
 
 type Chapter struct {
-	ID           string `json:"id" example:"1"`
-	Title        string `json:"title" example:"blaze"`
+	Code         uint   `json:"id" example:"1"`
+	Title        string `json:"title" example:"chapter title"`
+	Description  string `json:"description" example:"chapter description"`
 	MediaPath    string `json:"media_path" example:"http://cdn.audio.com/path/to/audio.wav"`
-	BookDetailID string `json:"book_id" example:"1"`
+	BookDetailID uint   `json:"-" example:"1"`
 }

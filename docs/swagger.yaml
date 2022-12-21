@@ -7,9 +7,42 @@ definitions:
       refresh_token:
         type: string
     type: object
+  request.BookRequest:
+    properties:
+      category_id:
+        example: 1
+        type: integer
+      cover_image:
+        example: ""
+        type: string
+      id:
+        example: 1
+        type: integer
+      summary:
+        example: Lorem ipsum dolor sit amet.
+        type: string
+      title:
+        example: book 1
+        type: string
+    type: object
   request.ChangePassword:
     properties:
       password:
+        type: string
+    type: object
+  request.ChapterRequest:
+    properties:
+      book_id:
+        example: 2
+        type: integer
+      id:
+        example: 1
+        type: integer
+      media_path:
+        example: ""
+        type: string
+      title:
+        example: chapter 1
         type: string
     type: object
   request.FindEmail:
@@ -126,6 +159,9 @@ definitions:
       code:
         example: DR00001
         type: string
+      email:
+        example: alsyadahmad@web.io
+        type: string
       full_name:
         example: Alsyad Ahmad
         type: string
@@ -210,11 +246,127 @@ paths:
       - application/json
       description: Fetch Book Data By ID
       parameters:
+      - description: book data
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/request.BookRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.MessageOnly'
+        "417":
+          description: Expectation Failed
+          schema:
+            $ref: '#/definitions/response.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Error'
+      security:
+      - ApiKey: []
+      summary: Insert New Book
+      tags:
+      - Book
+  /books/{book_id}/chapters:
+    post:
+      consumes:
+      - application/json
+      description: Insert New Chapter By Book ID
+      parameters:
       - description: book id
         in: path
-        name: id
+        name: book_id
         required: true
         type: integer
+      - description: chapter data
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/request.ChapterRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.MessageOnly'
+        "417":
+          description: Expectation Failed
+          schema:
+            $ref: '#/definitions/response.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Error'
+      security:
+      - ApiKey: []
+      summary: Insert New Chapter
+      tags:
+      - Book
+  /books/{book_id}/chapters/{chapter_id}/delete:
+    delete:
+      consumes:
+      - application/json
+      description: Delete Book Data By ID
+      parameters:
+      - description: book id
+        in: path
+        name: book_id
+        required: true
+        type: integer
+      - description: chapter id
+        in: path
+        name: chapter_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.MessageOnly'
+        "417":
+          description: Expectation Failed
+          schema:
+            $ref: '#/definitions/response.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Error'
+      security:
+      - ApiKey: []
+      summary: Delete Chapter By Book ID
+      tags:
+      - Book
+  /books/{book_id}/chapters/{chapter_id}/update:
+    put:
+      consumes:
+      - application/json
+      description: Fetch All Chapter Data By Book ID
+      parameters:
+      - description: book id
+        in: path
+        name: book_id
+        required: true
+        type: integer
+      - description: book id
+        in: path
+        name: chapter_id
+        required: true
+        type: integer
+      - description: chapter data
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/request.ChapterRequest'
       produces:
       - application/json
       responses:
@@ -237,10 +389,40 @@ paths:
             $ref: '#/definitions/response.Error'
       security:
       - ApiKey: []
-      summary: GetBookByID
+      summary: Get All Chapter By Book ID
       tags:
       - Book
   /books/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete Book Data By ID
+      parameters:
+      - description: book id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.MessageOnly'
+        "417":
+          description: Expectation Failed
+          schema:
+            $ref: '#/definitions/response.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Error'
+      security:
+      - ApiKey: []
+      summary: DeleteBookByID
+      tags:
+      - Book
     get:
       consumes:
       - application/json
@@ -274,6 +456,43 @@ paths:
       security:
       - ApiKey: []
       summary: GetBookByID
+      tags:
+      - Book
+  /books/{id}/update:
+    put:
+      consumes:
+      - application/json
+      description: Update Book Data By ID
+      parameters:
+      - description: book id
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: book data
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/request.BookRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.MessageOnly'
+        "417":
+          description: Expectation Failed
+          schema:
+            $ref: '#/definitions/response.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Error'
+      security:
+      - ApiKey: []
+      summary: UpdateBook
       tags:
       - Book
   /find_email:

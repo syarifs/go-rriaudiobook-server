@@ -8,8 +8,13 @@ import (
 type BookRepository interface {
 	FindAll() ([]response.Book, error)
 	FindByID(int) (response.BookDetail, error)
-	Create(models.Book) error
+	CreateBook(models.Book) error
 	InsertChapter(models.Chapter) error
-	Update(models.Book) error
-	Delete(int) error
+	GetBookCover(int) (string, error)
+	GetChapterAudio(int, int) (string, error)
+	GetChapterAudioByBookID(int) ([]string, error)
+	UpdateBook(models.Book) error
+	DeleteBook(int) error
+	UpdateChapter(models.Chapter) error
+	DeleteChapter(int, int) error
 }
