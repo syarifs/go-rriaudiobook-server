@@ -1,0 +1,341 @@
+{
+	"info": {
+		"_postman_id": "4569f97e-02e3-4d8e-a24e-0f6420764dea",
+		"name": "RRI Play",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Authorization",
+			"item": [
+				{
+					"name": "Login",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"alsyadahmad@system.co.id\",\n    \"password\": \"password\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{HOST}}/api/login",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"login"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Book",
+			"item": [
+				{
+					"name": "Insert New Book",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "title",
+									"value": "Test 123",
+									"type": "default"
+								},
+								{
+									"key": "summary",
+									"value": "lorem ipsum",
+									"type": "default"
+								},
+								{
+									"key": "cover_image",
+									"contentType": "image/*",
+									"type": "file",
+									"src": "/mnt/Data/Gambar/Wallpaper/881074.jpg"
+								},
+								{
+									"key": "category_id",
+									"value": "1",
+									"type": "default"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{HOST}}/api/books",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"books"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Book By ID",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "title",
+									"value": "Test Book 123",
+									"type": "text"
+								},
+								{
+									"key": "summary",
+									"value": "",
+									"type": "text"
+								},
+								{
+									"key": "category_id",
+									"value": "1",
+									"type": "text"
+								},
+								{
+									"key": "cover_image",
+									"type": "file",
+									"src": "/mnt/Data/Gambar/Avatar/Gochuumon wa Usagi desu ka/tedeza_rize.png"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{HOST}}/api/books/1/update",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"books",
+								"1",
+								"update"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Book By ID",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{HOST}}/api/books/6",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"books",
+								"6"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Book By ID",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "title",
+									"value": "Test 123",
+									"type": "default"
+								},
+								{
+									"key": "summary",
+									"value": "lorem ipsum",
+									"type": "default"
+								},
+								{
+									"key": "cover_image",
+									"contentType": "image/*",
+									"type": "file",
+									"src": []
+								},
+								{
+									"key": "category_id",
+									"value": "1",
+									"type": "default"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{HOST}}/api/books/1/delete",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"books",
+								"1",
+								"delete"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Book",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{HOST}}/api/books",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"books"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"auth": {
+				"type": "bearer",
+				"bearer": [
+					{
+						"key": "token",
+						"value": "{{BEARER}}",
+						"type": "string"
+					}
+				]
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "Chapter",
+			"item": [
+				{
+					"name": "Insert New Chapter",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "title",
+									"value": "Chapter 2",
+									"type": "text"
+								},
+								{
+									"key": "description",
+									"value": "Chapter 2 Description",
+									"type": "text"
+								},
+								{
+									"key": "media_path",
+									"type": "file",
+									"src": "/mnt/Data/Music/JINGLE/BRIDGING ID - UWEK - ML.mp3"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{HOST}}/api/books/1/chapters",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"books",
+								"1",
+								"chapters"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Chapter",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "title",
+									"value": "Chapter 1",
+									"type": "default"
+								},
+								{
+									"key": "description",
+									"value": "Chapter 1 Description",
+									"type": "default"
+								},
+								{
+									"key": "media_path",
+									"type": "file",
+									"src": "/mnt/Data/Music/JINGLE/JINGLE - RRI PRO 1 - TUBE.mp3"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{HOST}}/api/books/6/chapters/1/update",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"books",
+								"6",
+								"chapters",
+								"1",
+								"update"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
