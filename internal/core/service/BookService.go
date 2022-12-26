@@ -58,24 +58,23 @@ func (bs BookService) Update(id int, req request.BookRequest) (err error) {
 	return
 }
 
-func (bs BookService) InsertChapter(book_id int, req request.ChapterRequest) (err error) {
-	if book_id == 0 {
+func (bs BookService) InsertChapter(req request.ChapterRequest) (err error) {
+	if req.BookID == 0 {
 		return errors.New(400, "No ID Provided")
 	}
 
 	m, _ := utils.TypeConverter[models.Chapter](req)
-	m.BookID = uint(book_id)
 	err = bs.repo.InsertChapter(m)
 	return
 }
 
-func (bs BookService) UpdateChapter(book_id, chapter_id int, req request.ChapterRequest) (err error) {
-	if book_id == 0 {
+func (bs BookService) UpdateChapter(chapter_id int, req request.ChapterRequest) (err error) {
+	if chapter_id == 0 {
 		return errors.New(400, "No ID Provided")
 	}
 
 	var media_file string
-	media_file, err = bs.repo.GetChapterAudio(book_id, chapter_id)
+	media_file, err = bs.repo.GetChapterAudio(int(req.BookID), chapter_id)
 	if err != nil {
 		return
 	}
@@ -88,7 +87,6 @@ func (bs BookService) UpdateChapter(book_id, chapter_id int, req request.Chapter
 	}
 
 	m, _ := utils.TypeConverter[models.Chapter](req)
-	m.BookID = uint(book_id)
 	m.Code = uint(chapter_id)
 	err = bs.repo.UpdateChapter(m)
 	return

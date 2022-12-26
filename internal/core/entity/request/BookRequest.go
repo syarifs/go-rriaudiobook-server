@@ -1,6 +1,8 @@
 package request
 
 import (
+	vl "go-rriaudiobook-server/internal/utils/validators"
+
 	v "github.com/go-ozzo/ozzo-validation/v4"
 )
 
@@ -22,7 +24,7 @@ type ChapterRequest struct {
 
 func (br BookRequest) Validate() (err error) {
 	err = v.ValidateStruct(&br,
-		v.Field(&br.Title, v.Required),
+		v.Field(&br.Title, v.Required, v.By(vl.Duplicate("books", "title", int(br.ID)))),
 		v.Field(&br.Summary, v.Required),
 		v.Field(&br.CoverImage, v.Required),
 		v.Field(&br.CategoryID, v.Required),
@@ -32,9 +34,10 @@ func (br BookRequest) Validate() (err error) {
 
 func (cr ChapterRequest) Validate() (err error) {
 	err = v.ValidateStruct(&cr,
-		v.Field(&cr.Title, v.Required),
+		v.Field(&cr.Title, v.Required, v.By(vl.Duplicate("chapters", "title", int(cr.ID)))),
 		v.Field(&cr.Description, v.Required),
 		v.Field(&cr.MediaPath, v.Required),
+		v.Field(&cr.BookID, v.Required),
 	)
 	return
 }

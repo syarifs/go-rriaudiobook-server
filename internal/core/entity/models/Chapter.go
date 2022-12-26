@@ -10,7 +10,7 @@ type Chapter struct {
 	Title       string `json:"title"`
 	Description string `json:"description"`
 	MediaPath   string `json:"media_path"`
-	BookID      uint   `json:"book_id" gorm:"index;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
+	BookID      uint   `json:"book_id" gorm:"index"`
 	Book        Book
 }
 

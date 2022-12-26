@@ -90,6 +90,9 @@ func (bcon BookController) InsertBook(c echo.Context) error {
 	c.Bind(&req)
 	cover, _ := c.FormFile("cover_image")
 	if cover != nil {
+		if r, ok := check.HTTP(nil, file.ValidateFileType(cover, "image/*"), "Validate"); !ok {
+			return c.JSON(r.Code, r.Result)
+		}
 		req.CoverImage, _ = file.UploadFile(cover, "image/cover")
 	}
 
@@ -128,6 +131,9 @@ func (bcon BookController) UpdateBook(c echo.Context) error {
 	c.Bind(&req)
 	cover, _ := c.FormFile("cover_image")
 	if cover != nil {
+		if r, ok := check.HTTP(nil, file.ValidateFileType(cover, "image/*"), "Validate"); !ok {
+			return c.JSON(r.Code, r.Result)
+		}
 		req.CoverImage, _ = file.UploadFile(cover, "image/cover")
 	}
 
@@ -184,9 +190,14 @@ func (bcon BookController) InsertChapter(c echo.Context) error {
 	var req request.ChapterRequest
 	var id, _ = strconv.Atoi(c.Param("book_id"))
 	c.Bind(&req)
+	req.BookID = uint(id)
 
 	media_path, _ := c.FormFile("media_path")
+
 	if media_path != nil {
+		if r, ok := check.HTTP(nil, file.ValidateFileType(media_path, "audio/*"), "Validate"); !ok {
+			return c.JSON(r.Code, r.Result)
+		}
 		req.MediaPath, _ = file.UploadFile(media_path, "media/chapter")
 	}
 
@@ -194,7 +205,7 @@ func (bcon BookController) InsertChapter(c echo.Context) error {
 		return c.JSON(r.Code, r.Result)
 	}
 
-	err := bcon.srv.InsertChapter(id, req)
+	err := bcon.srv.InsertChapter(req)
 	if r, ok := check.HTTP(nil, err, "Create Chapter"); !ok {
 		return c.JSON(r.Code, r.Result)
 	}
@@ -224,13 +235,17 @@ func (bcon BookController) UpdateChapter(c echo.Context) error {
 	c.Bind(&req)
 	var book_id, _ = strconv.Atoi(c.Param("book_id"))
 	var chapter_id, _ = strconv.Atoi(c.Param("chapter_id"))
+	req.BookID = uint(book_id)
 
 	media_path, _ := c.FormFile("media_path")
 	if media_path != nil {
+		if r, ok := check.HTTP(nil, file.ValidateFileType(media_path, "audio/*"), "Validate"); !ok {
+			return c.JSON(r.Code, r.Result)
+		}
 		req.MediaPath, _ = file.UploadFile(media_path, "media/chapter")
 	}
 
-	err = bcon.srv.UpdateChapter(book_id, chapter_id, req)
+	err = bcon.srv.UpdateChapter(chapter_id, req)
 	if r, ok := check.HTTP(req, err, "Fetch Book"); !ok {
 		return c.JSON(r.Code, r.Result)
 	}
