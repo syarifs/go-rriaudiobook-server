@@ -52,7 +52,7 @@ func main() {
 	file.InitS3()
 
 	api := e.Group("/api")
-	jwt.NewJWTConnection(mongodb)
+	jwt.NewJWTConnection(mongodb, db)
 	routes.NewRoutes(api, ctrl, mw.JWT)
 
 	mw.Logging(e)

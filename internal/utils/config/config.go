@@ -11,30 +11,31 @@ import (
 )
 
 var (
-	DB_DRIVER                      string
-	DB_USERNAME                    string
-	DB_PASSWORD                    string
-	DB_DATABASE                    string
-	DB_HOST                        string
-	DB_PORT                        string
-	DB_TIMEZONE                    string
-	MONGODB_STRING                 string
-	MONGODB_DATABASE               string
-	SERVER_PORT                    string
-	ACCESS_KEY                     []byte
-	RESET_KEY                      []byte
-	SMTP_SERVER                    string
-	SMTP_PORT                      string
-	EMAIL                          string
-	PASSWORD                       string
-	JWT_ACCESS_EXPIRE_TIME         int64
-	JWT_REFRESH_EXPIRE_TIME        int64
-	JWT_RESET_PASSWORD_EXPIRE_TIME int64
-	S3_BUCKET_NAME                 string
-	S3_ACCOUNT_ID                  string
-	S3_ACCESS_KEY_ID               string
-	S3_ACCESS_KEY_SECRET           string
-	S3_PUBLIC_ACCESS               string
+	DB_DRIVER                        string
+	DB_USERNAME                      string
+	DB_PASSWORD                      string
+	DB_DATABASE                      string
+	DB_HOST                          string
+	DB_PORT                          string
+	DB_TIMEZONE                      string
+	MONGODB_STRING                   string
+	MONGODB_DATABASE                 string
+	SERVER_PORT                      string
+	SMTP_SERVER                      string
+	SMTP_PORT                        string
+	EMAIL                            string
+	PASSWORD                         string
+	TOKEN_DRIVER                     string
+	TOKEN_ACCESS_EXPIRE_TIME         int64
+	TOKEN_REFRESH_EXPIRE_TIME        int64
+	TOKEN_RESET_PASSWORD_EXPIRE_TIME int64
+	ACCESS_KEY                       []byte
+	RESET_KEY                        []byte
+	S3_BUCKET_NAME                   string
+	S3_ACCOUNT_ID                    string
+	S3_ACCESS_KEY_ID                 string
+	S3_ACCESS_KEY_SECRET             string
+	S3_PUBLIC_ACCESS                 string
 )
 
 func LoadConfig() {
@@ -76,19 +77,20 @@ func LoadConfig() {
 	S3_PUBLIC_ACCESS, _ = checkEnv(os.Getenv("S3_PUBLIC_ACCESS"), viper.GetString("s3.PUBLIC_ACCESS"))
 	EMAIL, _ = checkEnv(os.Getenv("SMTP_EMAIL"), viper.GetString("smtp.EMAIL"))
 	PASSWORD, _ = checkEnv(os.Getenv("SMTP_PASSWORD"), viper.GetString("smtp.PASSWORD"))
-	_, JWT_ACCESS_EXPIRE_TIME = checkEnv(
-		os.Getenv("JWT_ACCESS_EXPIRE_TIME"),
-		viper.GetString("jwt.ACCESS_TIME"),
+	TOKEN_DRIVER, _ = checkEnv(os.Getenv("TOKEN_DRIVER"), viper.GetString("token.DRIVER"))
+	_, TOKEN_ACCESS_EXPIRE_TIME = checkEnv(
+		os.Getenv("TOKEN_ACCESS_EXPIRE_TIME"),
+		viper.GetString("token.ACCESS_TIME"),
 		"int",
 	)
-	_, JWT_REFRESH_EXPIRE_TIME = checkEnv(
-		os.Getenv("JWT_REFRESH_EXPIRE_TIME"),
-		viper.GetString("jwt.REFRESH_TIME"),
+	_, TOKEN_REFRESH_EXPIRE_TIME = checkEnv(
+		os.Getenv("TOKEN_REFRESH_EXPIRE_TIME"),
+		viper.GetString("token.REFRESH_TIME"),
 		"int",
 	)
-	_, JWT_RESET_PASSWORD_EXPIRE_TIME = checkEnv(
-		os.Getenv("JWT_RESET_PASSWORD_EXPIRE_TIME"),
-		viper.GetString("jwt.FORGOT_PASSWORD_TIME"),
+	_, TOKEN_RESET_PASSWORD_EXPIRE_TIME = checkEnv(
+		os.Getenv("TOKEN_RESET_PASSWORD_EXPIRE_TIME"),
+		viper.GetString("token.FORGOT_PASSWORD_TIME"),
 		"int",
 	)
 }

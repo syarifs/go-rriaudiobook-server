@@ -35,7 +35,7 @@ func CreateToken(code, level string, types Token) (t models.Token, err error) {
 
 	if types == ACCESS {
 
-		rexpTime := time.Now().Add(time.Hour * time.Duration(config.JWT_REFRESH_EXPIRE_TIME)).Unix()
+		rexpTime := time.Now().Add(time.Hour * time.Duration(config.TOKEN_REFRESH_EXPIRE_TIME)).Unix()
 		rclaims := jwt.StandardClaims{
 			ExpiresAt: rexpTime,
 		}
@@ -43,10 +43,10 @@ func CreateToken(code, level string, types Token) (t models.Token, err error) {
 		rtoken := jwt.NewWithClaims(jwt.SigningMethodHS256, rclaims)
 		t.RefreshToken, _ = rtoken.SignedString(config.ACCESS_KEY)
 
-		expTime = time.Now().Add(time.Hour * time.Duration(config.JWT_ACCESS_EXPIRE_TIME)).Unix()
+		expTime = time.Now().Add(time.Hour * time.Duration(config.TOKEN_ACCESS_EXPIRE_TIME)).Unix()
 		sign = config.ACCESS_KEY
 	} else if types == RESET {
-		expTime = time.Now().Add(time.Minute * time.Duration(config.JWT_RESET_PASSWORD_EXPIRE_TIME)).Unix()
+		expTime = time.Now().Add(time.Minute * time.Duration(config.TOKEN_RESET_PASSWORD_EXPIRE_TIME)).Unix()
 		sign = config.RESET_KEY
 	}
 

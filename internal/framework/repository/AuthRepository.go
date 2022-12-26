@@ -53,31 +53,33 @@ func (repo *authRepository) ChangePassword(u m.User) (err error) {
 
 func (repo authRepository) SaveToken(token m.Token) (err error) {
 	// check and skip token saving if in testing mode
-	if repo.mongo == nil {
-		return
+	if repo.mongo != nil {
+		db := repo.mongo.Collection("token")
+		_, err = db.InsertOne(context.TODO(), token)
+	} else if repo.sqldb != nil {
+		err = repo.sqldb.Create(token).Error
 	}
-
-	db := repo.mongo.Collection("token")
-	_, err = db.InsertOne(context.TODO(), token)
 
 	return
 }
 
 func (repo authRepository) RevokeToken(token string) (err error) {
 	// check and skip token saving if in testing mode
-	if repo.mongo == nil {
+	if repo.mongo != nil {
+		filter := bson.D{
+			{Key: "access_token", Value: token},
+		}
+
+		db := repo.mongo.Collection("token")
+		res := db.FindOneAndDelete(context.TODO(), filter)
+
+		if res.Err() != nil {
+			err = errors.New("invalid or expired token")
+		}
 		return
-	}
-
-	filter := bson.D{
-		{Key: "access_token", Value: token},
-	}
-
-	db := repo.mongo.Collection("token")
-	res := db.FindOneAndDelete(context.TODO(), filter)
-
-	if res.Err() != nil {
-		err = errors.New("invalid or expired token")
+	} else if repo.sqldb != nil {
+		repo.sqldb.Model(m.Token{}).
+			Delete("access_token = ?", token)
 	}
 
 	return

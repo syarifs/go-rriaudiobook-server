@@ -3,6 +3,7 @@ package jwt
 import (
 	"context"
 	"fmt"
+	"go-rriaudiobook-server/internal/core/entity/models"
 	"go-rriaudiobook-server/internal/utils/config"
 	"go-rriaudiobook-server/internal/utils/errors"
 	"go-rriaudiobook-server/internal/utils/logger"
@@ -12,12 +13,15 @@ import (
 	"github.com/labstack/echo/v4"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
+	"gorm.io/gorm"
 )
 
-var client *mongo.Database
+var mongoc *mongo.Database
+var sqlc *gorm.DB
 
-func NewJWTConnection(mongo *mongo.Database) {
-	client = mongo
+func NewJWTConnection(mongo *mongo.Database, sql *gorm.DB) {
+	mongoc = mongo
+	sqlc = sql
 }
 
 func GetTokenData(header string, data string, tokenType Token) (extracted interface{}, err error) {
@@ -77,27 +81,31 @@ func ExtractToken(tkn string, tokenType Token) (token interface{}, err error) {
 }
 
 func FindToken(token string) error {
-	if client == nil {
-		return nil
+	var mongoData []bson.M
+	var sqlData models.Token
+
+	if mongoc != nil {
+		filter := bson.D{
+			{Key: "access_token", Value: token},
+		}
+
+		db := mongoc.Collection("token")
+		cur, err := db.Find(context.TODO(), filter)
+
+		if err != nil {
+			logger.WriteLog(err)
+		}
+
+		if err = cur.All(context.TODO(), &mongoData); err != nil {
+			logger.WriteLog(err)
+		}
+
+	} else if sqlc != nil {
+		sqlc.Model(models.Token{}).
+			Where("access_token = ?", token).Scan(&sqlData)
 	}
 
-	var data []bson.M
-	filter := bson.D{
-		{Key: "access_token", Value: token},
-	}
-
-	db := client.Collection("token")
-	cur, err := db.Find(context.TODO(), filter)
-
-	if err != nil {
-		logger.WriteLog(err)
-	}
-
-	if err = cur.All(context.TODO(), &data); err != nil {
-		logger.WriteLog(err)
-	}
-
-	if data == nil {
+	if mongoData == nil && sqlData.AccessToken == "" {
 		return errors.ErrInvalidToken
 	}
 

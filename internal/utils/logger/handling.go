@@ -26,6 +26,9 @@ func NewLogger(c *mongo.Database) {
 }
 
 func (mw *mongoWriter) Write(p []byte) (n int, err error) {
+	if mw.client == nil {
+		return
+	}
 	var db = mw.client.Collection("logs")
 	doc := logStruct{
 		Timestamp: time.Now().Unix(),

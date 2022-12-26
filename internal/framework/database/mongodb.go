@@ -13,7 +13,7 @@ import (
 
 func initMongoDB() (db *mongo.Database) {
 
-	if os.Getenv("Env") == "testing" {
+	if os.Getenv("Env") == "testing" || config.TOKEN_DRIVER != "mongo" {
 		db = nil
 		return
 	}
