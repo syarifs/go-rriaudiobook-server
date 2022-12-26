@@ -14,7 +14,7 @@
         },
         "version": "1.0"
     },
-    "host": "localhost:8080",
+    "host": "go-rriaudiobook-server-production.up.railway.app",
     "basePath": "/api",
     "paths": {
         "/books": {
@@ -1222,6 +1222,10 @@
                     "type": "integer",
                     "example": 2
                 },
+                "description": {
+                    "type": "string",
+                    "example": "chapter 1 description"
+                },
                 "id": {
                     "type": "integer",
                     "example": 1
@@ -1337,13 +1341,13 @@
         "response.Chapter": {
             "type": "object",
             "properties": {
-                "book_id": {
+                "description": {
                     "type": "string",
-                    "example": "1"
+                    "example": "chapter description"
                 },
                 "id": {
-                    "type": "string",
-                    "example": "1"
+                    "type": "integer",
+                    "example": 1
                 },
                 "media_path": {
                     "type": "string",
@@ -1351,7 +1355,7 @@
                 },
                 "title": {
                     "type": "string",
-                    "example": "blaze"
+                    "example": "chapter title"
                 }
             }
         },

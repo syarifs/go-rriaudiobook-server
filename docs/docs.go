@@ -1225,6 +1225,10 @@ const docTemplate = `{
                     "type": "integer",
                     "example": 2
                 },
+                "description": {
+                    "type": "string",
+                    "example": "chapter 1 description"
+                },
                 "id": {
                     "type": "integer",
                     "example": 1
@@ -1340,13 +1344,13 @@ const docTemplate = `{
         "response.Chapter": {
             "type": "object",
             "properties": {
-                "book_id": {
+                "description": {
                     "type": "string",
-                    "example": "1"
+                    "example": "chapter description"
                 },
                 "id": {
-                    "type": "string",
-                    "example": "1"
+                    "type": "integer",
+                    "example": 1
                 },
                 "media_path": {
                     "type": "string",
@@ -1354,7 +1358,7 @@ const docTemplate = `{
                 },
                 "title": {
                     "type": "string",
-                    "example": "blaze"
+                    "example": "chapter title"
                 }
             }
         },
@@ -1471,7 +1475,7 @@ const docTemplate = `{
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
 	Version:          "1.0",
-	Host:             "localhost:8080",
+	Host:             "go-rriaudiobook-server-production.up.railway.app",
 	BasePath:         "/api",
 	Schemes:          []string{"http", "https"},
 	Title:            "RRI Audiobook API",
