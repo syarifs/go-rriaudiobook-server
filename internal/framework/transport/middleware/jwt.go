@@ -1,7 +1,9 @@
 package middleware
 
 import (
+	"fmt"
 	"go-rriaudiobook-server/internal/core/entity/response"
+	"go-rriaudiobook-server/internal/utils/config"
 	"go-rriaudiobook-server/internal/utils/errors/check"
 	"go-rriaudiobook-server/internal/utils/jwt"
 	"net/http"
@@ -13,6 +15,11 @@ import (
 func JWT(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		token, err := jwt.GetToken(c, jwt.ACCESS)
+
+		fmt.Println("Token Get:", token)
+		fmt.Println("Token Error:", err)
+		fmt.Println("Access Time:", config.TOKEN_ACCESS_EXPIRE_TIME)
+		fmt.Println("Refresh Time:", config.TOKEN_REFRESH_EXPIRE_TIME)
 
 		if r, ok := check.HTTP(nil, err, "Validate Token"); !ok {
 			return c.JSON(r.Code, r.Result)

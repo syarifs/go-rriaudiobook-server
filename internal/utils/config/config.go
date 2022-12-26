@@ -3,7 +3,6 @@ package config
 import (
 	"fmt"
 	"os"
-	"reflect"
 	"strconv"
 
 	"github.com/integralist/go-findroot/find"
@@ -54,78 +53,58 @@ func LoadConfig() {
 		fmt.Println("Config file not found, using os env.")
 	}
 
-	SERVER_PORT, _ = checkEnv(os.Getenv("PORT"), viper.GetString("server.PORT"))
-	MONGODB_STRING, _ = checkEnv(os.Getenv("MONGODB_STRING"), viper.GetString("mongo.STRING"))
-	MONGODB_DATABASE, _ = checkEnv(os.Getenv("MONGODB_DATABASE"), viper.GetString("mongo.DATABASE"))
-	DB_DRIVER, _ = checkEnv(os.Getenv("DB_DRIVER"), viper.GetString("db.DRIVER"))
-	DB_DATABASE, _ = checkEnv(os.Getenv("DB_DATABASE"), viper.GetString("db.DATABASE"))
-	DB_USERNAME, _ = checkEnv(os.Getenv("DB_USERNAME"), viper.GetString("db.USERNAME"))
-	DB_PASSWORD, _ = checkEnv(os.Getenv("DB_PASSWORD"), viper.GetString("db.PASSWORD"))
-	DB_HOST, _ = checkEnv(os.Getenv("DB_HOST"), viper.GetString("db.HOST"))
-	DB_PORT, _ = checkEnv(os.Getenv("DB_PORT"), viper.GetString("db.PORT"))
-	DB_TIMEZONE, _ = checkEnv(os.Getenv("DB_TIMEZONE"), viper.GetString("db.TIMEZONE"))
-	access_key, _ := checkEnv(os.Getenv("ACCESS_KEY"), viper.GetString("secret.ACCESS_KEY"))
-	reset_key, _ := checkEnv(os.Getenv("RESET_KEY"), viper.GetString("secret.RESET_KEY"))
+	SERVER_PORT = stringEnv(os.Getenv("PORT"), viper.GetString("server.PORT"))
+	MONGODB_STRING = stringEnv(os.Getenv("MONGODB_STRING"), viper.GetString("mongo.STRING"))
+	MONGODB_DATABASE = stringEnv(os.Getenv("MONGODB_DATABASE"), viper.GetString("mongo.DATABASE"))
+	DB_DRIVER = stringEnv(os.Getenv("DB_DRIVER"), viper.GetString("db.DRIVER"))
+	DB_DATABASE = stringEnv(os.Getenv("DB_DATABASE"), viper.GetString("db.DATABASE"))
+	DB_USERNAME = stringEnv(os.Getenv("DB_USERNAME"), viper.GetString("db.USERNAME"))
+	DB_PASSWORD = stringEnv(os.Getenv("DB_PASSWORD"), viper.GetString("db.PASSWORD"))
+	DB_HOST = stringEnv(os.Getenv("DB_HOST"), viper.GetString("db.HOST"))
+	DB_PORT = stringEnv(os.Getenv("DB_PORT"), viper.GetString("db.PORT"))
+	DB_TIMEZONE = stringEnv(os.Getenv("DB_TIMEZONE"), viper.GetString("db.TIMEZONE"))
+	access_key := stringEnv(os.Getenv("ACCESS_KEY"), viper.GetString("secret.ACCESS_KEY"))
+	reset_key := stringEnv(os.Getenv("RESET_KEY"), viper.GetString("secret.RESET_KEY"))
 	ACCESS_KEY = []byte(access_key)
 	RESET_KEY = []byte(reset_key)
-	SMTP_SERVER, _ = checkEnv(os.Getenv("SMTP_SERVER"), viper.GetString("smtp.SERVER"))
-	SMTP_PORT, _ = checkEnv(os.Getenv("SMTP_PORT"), viper.GetString("smtp.PORT"))
-	S3_BUCKET_NAME, _ = checkEnv(os.Getenv("S3_BUCKET_NAME"), viper.GetString("s3.BUCKET_NAME"))
-	S3_ACCOUNT_ID, _ = checkEnv(os.Getenv("S3_ACCOUNT_ID"), viper.GetString("s3.ACCOUNT_ID"))
-	S3_ACCESS_KEY_ID, _ = checkEnv(os.Getenv("S3_ACCESS_KEY_ID"), viper.GetString("s3.ACCESS_KEY_ID"))
-	S3_ACCESS_KEY_SECRET, _ = checkEnv(os.Getenv("S3_ACCESS_KEY_SECRET"), viper.GetString("s3.ACCESS_KEY_SECRET"))
-	S3_PUBLIC_ACCESS, _ = checkEnv(os.Getenv("S3_PUBLIC_ACCESS"), viper.GetString("s3.PUBLIC_ACCESS"))
-	EMAIL, _ = checkEnv(os.Getenv("SMTP_EMAIL"), viper.GetString("smtp.EMAIL"))
-	PASSWORD, _ = checkEnv(os.Getenv("SMTP_PASSWORD"), viper.GetString("smtp.PASSWORD"))
-	TOKEN_DRIVER, _ = checkEnv(os.Getenv("TOKEN_DRIVER"), viper.GetString("token.DRIVER"))
-	_, TOKEN_ACCESS_EXPIRE_TIME = checkEnv(
+	SMTP_SERVER = stringEnv(os.Getenv("SMTP_SERVER"), viper.GetString("smtp.SERVER"))
+	SMTP_PORT = stringEnv(os.Getenv("SMTP_PORT"), viper.GetString("smtp.PORT"))
+	S3_BUCKET_NAME = stringEnv(os.Getenv("S3_BUCKET_NAME"), viper.GetString("s3.BUCKET_NAME"))
+	S3_ACCOUNT_ID = stringEnv(os.Getenv("S3_ACCOUNT_ID"), viper.GetString("s3.ACCOUNT_ID"))
+	S3_ACCESS_KEY_ID = stringEnv(os.Getenv("S3_ACCESS_KEY_ID"), viper.GetString("s3.ACCESS_KEY_ID"))
+	S3_ACCESS_KEY_SECRET = stringEnv(os.Getenv("S3_ACCESS_KEY_SECRET"), viper.GetString("s3.ACCESS_KEY_SECRET"))
+	S3_PUBLIC_ACCESS = stringEnv(os.Getenv("S3_PUBLIC_ACCESS"), viper.GetString("s3.PUBLIC_ACCESS"))
+	EMAIL = stringEnv(os.Getenv("SMTP_EMAIL"), viper.GetString("smtp.EMAIL"))
+	PASSWORD = stringEnv(os.Getenv("SMTP_PASSWORD"), viper.GetString("smtp.PASSWORD"))
+	TOKEN_DRIVER = stringEnv(os.Getenv("TOKEN_DRIVER"), viper.GetString("token.DRIVER"))
+	TOKEN_ACCESS_EXPIRE_TIME = intEnv(
 		os.Getenv("TOKEN_ACCESS_EXPIRE_TIME"),
 		viper.GetString("token.ACCESS_TIME"),
-		"int",
 	)
-	_, TOKEN_REFRESH_EXPIRE_TIME = checkEnv(
+	TOKEN_REFRESH_EXPIRE_TIME = intEnv(
 		os.Getenv("TOKEN_REFRESH_EXPIRE_TIME"),
 		viper.GetString("token.REFRESH_TIME"),
-		"int",
 	)
-	_, TOKEN_RESET_PASSWORD_EXPIRE_TIME = checkEnv(
+	TOKEN_RESET_PASSWORD_EXPIRE_TIME = intEnv(
 		os.Getenv("TOKEN_RESET_PASSWORD_EXPIRE_TIME"),
 		viper.GetString("token.FORGOT_PASSWORD_TIME"),
-		"int",
 	)
 }
 
-func checkEnv(args ...interface{}) (envStr string, envInt int64) {
-	for i, v := range args {
-		switch i {
-		case 0:
-			if reflect.TypeOf(v).String() == "string" {
-				envStr = v.(string)
-			} else {
-				envInt = v.(int64)
-			}
-		case 1:
-			if envStr != "" || envInt != 0 {
-				return
-			}
-
-			if reflect.TypeOf(v).String() == "string" {
-				envStr = v.(string)
-			} else {
-				envInt = v.(int64)
-			}
-		case 2:
-			if reflect.TypeOf(v).String() != "string" {
-				return
-			}
-
-			if v == "int" || v == "int64" {
-				intEnv, _ := strconv.Atoi(envStr)
-				envInt = int64(intEnv)
-				envStr = ""
-			}
-		}
+func stringEnv(os, viper string) (env string) {
+	if os != "" {
+		return os
 	}
+	return viper
+}
 
+func intEnv(os, viper string) (env int64) {
+	if os != "" {
+		int, _ := strconv.Atoi(os)
+		env = int64(int)
+		return
+	}
+	int, _ := strconv.Atoi(viper)
+	env = int64(int)
 	return
 }

@@ -1,7 +1,6 @@
 package database
 
 import (
-	"fmt"
 	"go-rriaudiobook-server/internal/core/entity/models"
 	"go-rriaudiobook-server/internal/utils/config"
 
@@ -9,7 +8,6 @@ import (
 )
 
 func migrateDB(db *gorm.DB) (err error) {
-	fmt.Println(config.TOKEN_DRIVER)
 	if config.TOKEN_DRIVER == "sql" {
 		db.AutoMigrate(models.Token{})
 	}
