@@ -105,9 +105,6 @@ func FindToken(token string) error {
 			Where("access_token = ?", token).Scan(&sqlData)
 	}
 
-	fmt.Println("MongoData:", mongoData)
-	fmt.Println("SQLData:", sqlData)
-
 	if mongoData == nil && sqlData.AccessToken == "" {
 		return errors.ErrInvalidToken
 	}
