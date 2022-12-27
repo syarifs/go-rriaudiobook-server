@@ -39,9 +39,7 @@ func (br chapterRepository) Update(chapt m.Chapter) (err error) {
 }
 
 func (br chapterRepository) Delete(chapter_id, book_id int) (err error) {
-	db := br.sqldb.Delete(&m.Chapter{}).
-		Where(`code = ?`, chapter_id).
-		Where(`book_id = ?`, book_id)
+	db := br.sqldb.Delete(&m.Chapter{}, "code = ? AND book_id = ?", chapter_id, book_id)
 	err = check.DBRecord(db, check.DELETE)
 	return
 }

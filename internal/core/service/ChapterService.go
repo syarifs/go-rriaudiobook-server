@@ -58,15 +58,13 @@ func (bs ChapterService) Delete(book_id, chapter_id int) (err error) {
 
 	var cover string
 	cover, err = bs.repo.GetAudio(book_id, chapter_id)
-	if err != nil {
-		return
+	if err == nil {
+		err = file.RemoveFile(cover)
+		if err != nil {
+			return
+		}
 	}
 
-	err = file.RemoveFile(cover)
-	if err != nil {
-		return
-	}
-
-	err = bs.repo.Delete(book_id, chapter_id)
+	err = bs.repo.Delete(chapter_id, book_id)
 	return
 }
