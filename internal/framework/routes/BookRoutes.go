@@ -16,7 +16,4 @@ func NewBookRoutes(e *echo.Group, acon *controller.BookController, middleware ..
 	book.GET("/:id", acon.GetBookByID)
 	book.PUT("/:id/update", acon.UpdateBook, middleware...)
 	book.DELETE("/:id/delete", acon.DeleteBook, middleware...)
-	book.POST("/:book_id/chapters", acon.InsertChapter, middleware...)
-	book.PUT("/:book_id/chapters/:chapter_id/update", acon.UpdateChapter, middleware...)
-	book.DELETE("/:book_id/chapters/:chapter_id/delete", acon.DeleteChapter, middleware...)
 }

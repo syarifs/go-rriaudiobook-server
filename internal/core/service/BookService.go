@@ -30,7 +30,7 @@ func (bs BookService) FindByID(id int) (res response.BookDetail, err error) {
 
 func (bs BookService) Create(req request.BookRequest) (err error) {
 	m, _ := utils.TypeConverter[models.Book](req)
-	err = bs.repo.CreateBook(m)
+	err = bs.repo.Create(m)
 	return
 }
 
@@ -40,7 +40,7 @@ func (bs BookService) Update(id int, req request.BookRequest) (err error) {
 	}
 
 	var cover string
-	cover, err = bs.repo.GetBookCover(id)
+	cover, err = bs.repo.GetCover(id)
 	if err != nil {
 		return
 	}
@@ -54,41 +54,7 @@ func (bs BookService) Update(id int, req request.BookRequest) (err error) {
 
 	m, _ := utils.TypeConverter[models.Book](req)
 	m.ID = uint(id)
-	err = bs.repo.UpdateBook(m)
-	return
-}
-
-func (bs BookService) InsertChapter(req request.ChapterRequest) (err error) {
-	if req.BookID == 0 {
-		return errors.New(400, "No ID Provided")
-	}
-
-	m, _ := utils.TypeConverter[models.Chapter](req)
-	err = bs.repo.InsertChapter(m)
-	return
-}
-
-func (bs BookService) UpdateChapter(chapter_id int, req request.ChapterRequest) (err error) {
-	if chapter_id == 0 {
-		return errors.New(400, "No ID Provided")
-	}
-
-	var media_file string
-	media_file, err = bs.repo.GetChapterAudio(int(req.BookID), chapter_id)
-	if err != nil {
-		return
-	}
-
-	if media_file != "" {
-		err = file.RemoveFile(media_file)
-		if err != nil {
-			return
-		}
-	}
-
-	m, _ := utils.TypeConverter[models.Chapter](req)
-	m.Code = uint(chapter_id)
-	err = bs.repo.UpdateChapter(m)
+	err = bs.repo.Update(m)
 	return
 }
 
@@ -98,7 +64,7 @@ func (bs BookService) DeleteBook(id int) (err error) {
 	}
 
 	var cover string
-	cover, err = bs.repo.GetBookCover(id)
+	cover, err = bs.repo.GetCover(id)
 	if err != nil {
 		return
 	}
@@ -123,26 +89,6 @@ func (bs BookService) DeleteBook(id int) (err error) {
 		}
 	}
 
-	err = bs.repo.DeleteBook(id)
-	return
-}
-
-func (bs BookService) DeleteChapter(book_id, chapter_id int) (err error) {
-	if book_id == 0 {
-		return errors.New(400, "No ID Provided")
-	}
-
-	var cover string
-	cover, err = bs.repo.GetChapterAudio(book_id, chapter_id)
-	if err != nil {
-		return
-	}
-
-	err = file.RemoveFile(cover)
-	if err != nil {
-		return
-	}
-
-	err = bs.repo.DeleteChapter(book_id, chapter_id)
+	err = bs.repo.Delete(id)
 	return
 }
