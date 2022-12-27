@@ -7,8 +7,8 @@ import (
 )
 
 type CategoryRequest struct {
-	ID   uint
-	Name string
+	ID   uint   `json:"id" example:"1"`
+	Name string `json:"name" example:"Kebudayaan"`
 }
 
 func (cr CategoryRequest) Validate() (err error) {
