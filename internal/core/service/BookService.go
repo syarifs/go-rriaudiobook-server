@@ -65,11 +65,7 @@ func (bs BookService) DeleteBook(id int) (err error) {
 
 	var cover string
 	cover, err = bs.repo.GetCover(id)
-	if err != nil {
-		return
-	}
-
-	if cover != "" {
+	if err == nil {
 		err = file.RemoveFile(cover)
 		if err != nil {
 			return
@@ -78,14 +74,12 @@ func (bs BookService) DeleteBook(id int) (err error) {
 
 	var chaptAudio []string
 	chaptAudio, err = bs.repo.GetChapterAudioByBookID(id)
-	if err != nil {
-		return
-	}
-
-	for _, v := range chaptAudio {
-		err = file.RemoveFile(v)
-		if err != nil {
-			return
+	if err == nil {
+		for _, v := range chaptAudio {
+			err = file.RemoveFile(v)
+			if err != nil {
+				return
+			}
 		}
 	}
 
