@@ -28,6 +28,11 @@ func (bs BookService) FindByID(id int) (res response.BookDetail, err error) {
 	return
 }
 
+func (bs BookService) FindByUser(code string) (res []response.Book, err error) {
+	res, err = bs.repo.FindByUser(code)
+	return
+}
+
 func (bs BookService) Create(req request.BookRequest) (err error) {
 	m, _ := utils.TypeConverter[models.Book](req)
 	m.CoverImage, err = file.UploadFile(req.CoverImage, "image/*", "")

@@ -25,6 +25,16 @@ func (br bookRepository) FindAll() (res []response.Book, err error) {
 	return
 }
 
+func (br bookRepository) FindByUser(code string) (res []response.Book, err error) {
+	db := br.sqldb.Model(&m.Book{}).
+		Select(`books.*`, `"Category".name as category`).
+		Where("books.user_code = ?", code).
+		Joins(`Category`).
+		Scan(&res)
+	err = check.DBRecord(db, check.FIND)
+	return
+}
+
 func (br bookRepository) FindByID(id int) (res response.BookDetail, err error) {
 	db := br.sqldb.Model(&m.Book{}).
 		Select(`books.*`, `"Category".name as category`).

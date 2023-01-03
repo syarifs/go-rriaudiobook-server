@@ -31,12 +31,22 @@ func NewBookController(srv *service.BookService) *BookController {
 // @Failure 500 {object} response.Error{}
 // @Router /books [get]
 func (bcon BookController) GetAllBook(c echo.Context) error {
+	header, _ := jwt.GetToken(c, jwt.ACCESS)
+	user_code, _ := jwt.GetTokenData(header, "code", jwt.ACCESS)
+
 	var res []response.Book
 	var err error
 
-	res, err = bcon.srv.FindAll()
-	if r, ok := check.HTTP(res, err, "Fetch Book"); !ok {
-		return c.JSON(r.Code, r.Result)
+	if user_code != nil {
+		res, err = bcon.srv.FindByUser(user_code.(string))
+		if r, ok := check.HTTP(res, err, "Fetch Book"); !ok {
+			return c.JSON(r.Code, r.Result)
+		}
+	} else {
+		res, err = bcon.srv.FindAll()
+		if r, ok := check.HTTP(res, err, "Fetch Book"); !ok {
+			return c.JSON(r.Code, r.Result)
+		}
 	}
 
 	return c.JSON(200, response.MessageData{

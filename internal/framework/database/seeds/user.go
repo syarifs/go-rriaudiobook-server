@@ -26,6 +26,14 @@ func userSeeder() Seed {
 			RoleID:   2,
 			Status:   1,
 		},
+		{
+			FullName: "Milim Nava",
+			Email:    "milimnava@system.co.id",
+			Password: password,
+			Gender:   "Female",
+			RoleID:   2,
+			Status:   1,
+		},
 	}
 	model := &models.User{}
 
