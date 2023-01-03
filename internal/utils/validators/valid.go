@@ -90,3 +90,27 @@ func FileType(file *multipart.FileHeader, types string, fallbackext string) vali
 		return
 	}
 }
+
+func DuplicateByCode(table, field string, code string) validation.RuleFunc {
+	return func(value interface{}) (err error) {
+		var c int64
+		var where []string
+		field_name := strings.Split(field, "_")
+
+		where = append(where, fmt.Sprintf("%s = '%s'", field, value))
+
+		if code != "" {
+			where = append(where, fmt.Sprintf("code != %s", code))
+		}
+
+		_DB.Table(table).
+			Where(strings.Join(where, " AND ")).Count(&c)
+
+		if c != 0 {
+			msg := fmt.Sprintf("duplicate %s %s.", strings.Join(field_name, " "), value.(string))
+			err = errors.New(msg)
+		}
+
+		return
+	}
+}

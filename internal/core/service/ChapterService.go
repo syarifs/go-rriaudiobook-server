@@ -32,13 +32,13 @@ func (bs ChapterService) Create(req request.ChapterRequest) (err error) {
 	return
 }
 
-func (bs ChapterService) Update(chapter_id int, req request.ChapterRequest) (err error) {
-	if chapter_id == 0 {
+func (bs ChapterService) Update(req request.ChapterRequest) (err error) {
+	if req.Code == 0 {
 		return errors.New(400, "No ID Provided")
 	}
 
 	var media_file string
-	media_file, err = bs.repo.GetAudio(chapter_id, int(req.BookID))
+	media_file, err = bs.repo.GetAudio(req.Code, int(req.BookID))
 	if err == nil {
 		err = file.RemoveFile(media_file)
 		if err != nil {
@@ -47,7 +47,7 @@ func (bs ChapterService) Update(chapter_id int, req request.ChapterRequest) (err
 	}
 
 	m, _ := utils.TypeConverter[models.Chapter](req)
-	m.Code = uint(chapter_id)
+	m.Code = uint(req.Code)
 	m.MediaPath, err = file.UploadFile(req.MediaPath, "chapter/", "audio/mpeg")
 	if err != nil {
 		return

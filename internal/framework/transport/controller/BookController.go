@@ -140,12 +140,18 @@ func (bcon BookController) UpdateBook(c echo.Context) error {
 	var id, _ = strconv.Atoi(c.Param("id"))
 
 	c.Bind(&req)
+	req.ID = uint(id)
+
 	cover, _ := c.FormFile("cover_image")
 	if cover != nil {
 		req.CoverImage = cover
 	}
 
-	err = bcon.srv.Update(id, req)
+	if r, ok := check.HTTP(nil, req.Validate(), "Validate"); !ok {
+		return c.JSON(r.Code, r.Result)
+	}
+
+	err = bcon.srv.Update(req)
 	if r, ok := check.HTTP(nil, err, "Update Book"); !ok {
 		return c.JSON(r.Code, r.Result)
 	}

@@ -44,13 +44,13 @@ func (bs BookService) Create(req request.BookRequest) (err error) {
 	return
 }
 
-func (bs BookService) Update(id int, req request.BookRequest) (err error) {
-	if id == 0 {
+func (bs BookService) Update(req request.BookRequest) (err error) {
+	if req.ID == 0 {
 		return errors.New(400, "No ID Provided")
 	}
 
 	var cover string
-	cover, err = bs.repo.GetCover(id)
+	cover, err = bs.repo.GetCover(int(req.ID))
 	if err == nil {
 		err = file.RemoveFile(cover)
 		if err != nil {
@@ -59,7 +59,6 @@ func (bs BookService) Update(id int, req request.BookRequest) (err error) {
 	}
 
 	m, _ := utils.TypeConverter[models.Book](req)
-	m.ID = uint(id)
 	m.CoverImage, err = file.UploadFile(req.CoverImage, "cover/", "")
 	if err != nil {
 		return

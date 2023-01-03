@@ -78,6 +78,7 @@ func (bcon ChapterController) UpdateChapter(c echo.Context) error {
 	var book_id, _ = strconv.Atoi(c.Param("book_id"))
 	var chapter_id, _ = strconv.Atoi(c.Param("chapter_id"))
 	req.BookID = uint(book_id)
+	req.Code = chapter_id
 
 	media_path, _ := c.FormFile("media_path")
 	if media_path != nil {
@@ -88,7 +89,7 @@ func (bcon ChapterController) UpdateChapter(c echo.Context) error {
 		return c.JSON(r.Code, r.Result)
 	}
 
-	err = bcon.srv.Update(chapter_id, req)
+	err = bcon.srv.Update(req)
 	if r, ok := check.HTTP(req, err, "Update Chapter"); !ok {
 		return c.JSON(r.Code, r.Result)
 	}
