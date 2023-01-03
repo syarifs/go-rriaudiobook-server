@@ -17,6 +17,7 @@ type User struct {
 	RoleID   int    `json:"role_id"`
 	Role     Role   `json:"roles"`
 
+	Book      []Book `gorm:"references:Code;foreignKey:UserCode"`
 	DeletedAt gorm.DeletedAt
 }
 

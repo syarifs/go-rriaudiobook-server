@@ -16,7 +16,7 @@ import (
 	"github.com/google/uuid"
 )
 
-func UploadFile(file *multipart.FileHeader, path string) (fpath string, err error) {
+func UploadFile(file *multipart.FileHeader, path string, fallbacktype string) (fpath string, err error) {
 
 	files, _ := file.Open()
 	defer files.Close()
@@ -24,6 +24,10 @@ func UploadFile(file *multipart.FileHeader, path string) (fpath string, err erro
 	fileByte, err := io.ReadAll(files)
 	contentType := http.DetectContentType(fileByte)
 	fpath = path + "/" + uuid.New().String() + filepath.Ext(file.Filename)
+
+	if contentType != fallbacktype && fallbacktype != "" {
+		contentType = fallbacktype
+	}
 
 	uploader := manager.NewUploader(s3Client)
 	_, err = uploader.Upload(context.Background(), &s3.PutObjectInput{

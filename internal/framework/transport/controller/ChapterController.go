@@ -5,7 +5,6 @@ import (
 	"go-rriaudiobook-server/internal/core/entity/response"
 	"go-rriaudiobook-server/internal/core/service"
 	"go-rriaudiobook-server/internal/utils/errors/check"
-	"go-rriaudiobook-server/internal/utils/file"
 	"strconv"
 
 	"github.com/labstack/echo/v4"
@@ -41,10 +40,7 @@ func (bcon ChapterController) InsertChapter(c echo.Context) error {
 	media_path, _ := c.FormFile("media_path")
 
 	if media_path != nil {
-		if r, ok := check.HTTP(nil, file.ValidateFileType(media_path, "audio/*"), "Validate"); !ok {
-			return c.JSON(r.Code, r.Result)
-		}
-		req.MediaPath, _ = file.UploadFile(media_path, "media/chapter")
+		req.MediaPath = media_path
 	}
 
 	if r, ok := check.HTTP(nil, req.Validate(), "Validate"); !ok {
@@ -85,14 +81,15 @@ func (bcon ChapterController) UpdateChapter(c echo.Context) error {
 
 	media_path, _ := c.FormFile("media_path")
 	if media_path != nil {
-		if r, ok := check.HTTP(nil, file.ValidateFileType(media_path, "audio/*"), "Validate"); !ok {
-			return c.JSON(r.Code, r.Result)
-		}
-		req.MediaPath, _ = file.UploadFile(media_path, "media/chapter")
+		req.MediaPath = media_path
+	}
+
+	if r, ok := check.HTTP(nil, req.Validate(), "Validate"); !ok {
+		return c.JSON(r.Code, r.Result)
 	}
 
 	err = bcon.srv.Update(chapter_id, req)
-	if r, ok := check.HTTP(req, err, "Fetch Chapter"); !ok {
+	if r, ok := check.HTTP(req, err, "Update Chapter"); !ok {
 		return c.JSON(r.Code, r.Result)
 	}
 

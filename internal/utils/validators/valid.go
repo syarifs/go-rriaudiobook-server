@@ -3,6 +3,10 @@ package validators
 import (
 	"errors"
 	"fmt"
+	"io"
+	"mime/multipart"
+	"net/http"
+	"path/filepath"
 	"strings"
 
 	validation "github.com/go-ozzo/ozzo-validation/v4"
@@ -61,6 +65,28 @@ func Email(id int) validation.RuleFunc {
 			err = errors.New(msg)
 		}
 
+		return
+	}
+}
+
+func FileType(file *multipart.FileHeader, types string, fallbackext string) validation.RuleFunc {
+	return func(value interface{}) (err error) {
+		files, _ := file.Open()
+		defer files.Close()
+
+		fileByte, _ := io.ReadAll(files)
+		fileExt := filepath.Ext(file.Filename)
+		contentType := http.DetectContentType(fileByte)
+
+		if strings.Contains(types, "/*") {
+			types = strings.TrimSuffix(types, "/*")
+		}
+
+		if strings.Contains(contentType, types) || fileExt == fallbackext {
+			return
+		}
+
+		err = fmt.Errorf("file type must %s", types)
 		return
 	}
 }

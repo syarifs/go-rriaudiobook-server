@@ -5,7 +5,7 @@ import (
 	"go-rriaudiobook-server/internal/core/entity/response"
 	"go-rriaudiobook-server/internal/core/service"
 	"go-rriaudiobook-server/internal/utils/errors/check"
-	"go-rriaudiobook-server/internal/utils/file"
+	"go-rriaudiobook-server/internal/utils/jwt"
 	"strconv"
 
 	"github.com/labstack/echo/v4"
@@ -86,14 +86,15 @@ func (bcon BookController) GetBookByID(c echo.Context) error {
 // @Failure 500 {object} response.Error{}
 // @Router /books [post]
 func (bcon BookController) InsertBook(c echo.Context) error {
+	header, _ := jwt.GetToken(c, jwt.ACCESS)
+	user_code, _ := jwt.GetTokenData(header, "code", jwt.ACCESS)
+
 	var req request.BookRequest
 	c.Bind(&req)
 	cover, _ := c.FormFile("cover_image")
+	req.UserCode = user_code.(string)
 	if cover != nil {
-		if r, ok := check.HTTP(nil, file.ValidateFileType(cover, "image/*"), "Validate"); !ok {
-			return c.JSON(r.Code, r.Result)
-		}
-		req.CoverImage, _ = file.UploadFile(cover, "image/cover")
+		req.CoverImage = cover
 	}
 
 	if r, ok := check.HTTP(nil, req.Validate(), "Validate"); !ok {
@@ -131,10 +132,7 @@ func (bcon BookController) UpdateBook(c echo.Context) error {
 	c.Bind(&req)
 	cover, _ := c.FormFile("cover_image")
 	if cover != nil {
-		if r, ok := check.HTTP(nil, file.ValidateFileType(cover, "image/*"), "Validate"); !ok {
-			return c.JSON(r.Code, r.Result)
-		}
-		req.CoverImage, _ = file.UploadFile(cover, "image/cover")
+		req.CoverImage = cover
 	}
 
 	err = bcon.srv.Update(id, req)

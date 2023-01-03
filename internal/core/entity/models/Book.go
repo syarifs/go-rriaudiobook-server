@@ -8,4 +8,5 @@ type Book struct {
 	CategoryID uint      `json:"category_id"`
 	Category   Category  `json:"category"`
 	Chapter    []Chapter `json:"chapters" gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
+	UserCode   string    `json:"user_code" gorm:"index"`
 }
