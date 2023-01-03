@@ -35,7 +35,7 @@ func (bs BookService) FindByUser(code string) (res []response.Book, err error) {
 
 func (bs BookService) Create(req request.BookRequest) (err error) {
 	m, _ := utils.TypeConverter[models.Book](req)
-	m.CoverImage, err = file.UploadFile(req.CoverImage, "image/*", "")
+	m.CoverImage, err = file.UploadFile(req.CoverImage, "cover/", "")
 	if err != nil {
 		return
 	}
@@ -64,7 +64,7 @@ func (bs BookService) Update(id int, req request.BookRequest) (err error) {
 
 	m, _ := utils.TypeConverter[models.Book](req)
 	m.ID = uint(id)
-	m.CoverImage, err = file.UploadFile(req.CoverImage, "image/*", "")
+	m.CoverImage, err = file.UploadFile(req.CoverImage, "cover/", "")
 	if err != nil {
 		return
 	}

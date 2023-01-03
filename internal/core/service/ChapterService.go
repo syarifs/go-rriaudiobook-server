@@ -23,7 +23,7 @@ func (bs ChapterService) Create(req request.ChapterRequest) (err error) {
 	}
 
 	m, _ := utils.TypeConverter[models.Chapter](req)
-	m.MediaPath, err = file.UploadFile(req.MediaPath, "audio/*", "audio/mpeg")
+	m.MediaPath, err = file.UploadFile(req.MediaPath, "chapter/", "audio/mpeg")
 	if err != nil {
 		return
 	}
@@ -52,7 +52,7 @@ func (bs ChapterService) Update(chapter_id int, req request.ChapterRequest) (err
 
 	m, _ := utils.TypeConverter[models.Chapter](req)
 	m.Code = uint(chapter_id)
-	m.MediaPath, err = file.UploadFile(req.MediaPath, "audio/*", "audio/mpeg")
+	m.MediaPath, err = file.UploadFile(req.MediaPath, "chapter/", "audio/mpeg")
 	if err != nil {
 		return
 	}

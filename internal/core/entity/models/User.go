@@ -8,7 +8,7 @@ import (
 
 type User struct {
 	ID       uint   `json:"id" gorm:"primary_key"`
-	Code     string `json:"code" gorm:"index"`
+	Code     string `json:"code" gorm:"unique"`
 	FullName string `json:"full_name"`
 	Gender   string `json:"gender"`
 	Email    string `json:"email"`
@@ -17,7 +17,7 @@ type User struct {
 	RoleID   int    `json:"role_id"`
 	Role     Role   `json:"roles"`
 
-	Book      []Book `gorm:"references:Code;foreignKey:UserCode"`
+	Book      []Book `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;references:Code;foreignKey:UserCode;"`
 	DeletedAt gorm.DeletedAt
 }
 
