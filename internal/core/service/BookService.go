@@ -51,11 +51,7 @@ func (bs BookService) Update(id int, req request.BookRequest) (err error) {
 
 	var cover string
 	cover, err = bs.repo.GetCover(id)
-	if err != nil {
-		return
-	}
-
-	if cover != "" {
+	if err == nil {
 		err = file.RemoveFile(cover)
 		if err != nil {
 			return

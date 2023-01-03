@@ -38,12 +38,8 @@ func (bs ChapterService) Update(chapter_id int, req request.ChapterRequest) (err
 	}
 
 	var media_file string
-	media_file, err = bs.repo.GetAudio(int(req.BookID), chapter_id)
-	if err != nil {
-		return
-	}
-
-	if media_file != "" {
+	media_file, err = bs.repo.GetAudio(chapter_id, int(req.BookID))
+	if err == nil {
 		err = file.RemoveFile(media_file)
 		if err != nil {
 			return
